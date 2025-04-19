@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/CVS": true,
+        ".vscode": true,
+        "expo-env.d.ts": true
+    },
+    "hide-files.files": [
+        "expo-env.d.ts"
+    ]
+}
