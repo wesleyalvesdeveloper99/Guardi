@@ -43,15 +43,17 @@ export const ThemedSwitch = <T extends IconLibrary>({
   ) => {
     if (!iconName) return null;
 
+    const iconColor = theme.icon;
+
     switch (library) {
       case "MaterialCommunityIcons":
         return (
-          <MaterialCommunityIcons name={iconName} size={24} color="#fff" />
+          <MaterialCommunityIcons name={iconName} size={24} color={iconColor} />
         );
       case "Ionicons":
-        return <Ionicons name={iconName} size={24} color="#fff" />;
+        return <Ionicons name={iconName} size={24} color={iconColor} />;
       case "FontAwesome":
-        return <FontAwesome name={iconName} size={24} color="#fff" />;
+        return <FontAwesome name={iconName} size={24} color={iconColor} />;
       default:
         return null;
     }
