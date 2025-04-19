@@ -5,7 +5,7 @@ import { Colors } from "@/constants/Colors";
 import { Theme } from "@/constants/Theme";
 import { BlurView } from "expo-blur";
 
-type ToastType = "success" | "error";
+type ToastType = "success" | "error" | "info";
 
 type Props = {
   type: ToastType;
@@ -17,11 +17,28 @@ export function ThemedToast({ type, text1, text2 }: Props) {
   const theme = useColorScheme() ?? "light";
   const themeColors = Colors[theme];
 
-  const isSuccess = type === "success";
-  const borderColor = isSuccess ? themeColors.success : themeColors.error;
-  const icon = isSuccess ? "checkmark-circle" : "alert-circle";
+  let borderColor: string;
+  let icon: keyof typeof Ionicons.glyphMap;
 
-  const Container = Platform.OS === "ios" ? BlurView : View;
+  switch (type) {
+    case "success":
+      borderColor = themeColors.success;
+      icon = "checkmark-circle";
+      break;
+    case "error":
+      borderColor = themeColors.error;
+      icon = "alert-circle";
+      break;
+    case "info":
+      borderColor = themeColors.text;
+      icon = "information-circle";
+      break;
+    default:
+      borderColor = themeColors.text;
+      icon = "information-circle";
+  }
+
+  const Container: React.ElementType = Platform.OS === "ios" ? BlurView : View;
 
   return (
     <Container

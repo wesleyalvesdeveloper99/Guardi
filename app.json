@@ -32,10 +32,20 @@
         "NFC",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
+        "android.permission.NFC",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "NFC",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
         "android.permission.NFC"
       ],
       "config": {
         "usesFeatures": [
+          {
+            "name": "android.hardware.nfc",
+            "required": false
+          },
           {
             "name": "android.hardware.nfc",
             "required": false
@@ -53,7 +63,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logoWhite.png",
+          "image": "./assets/images/icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -93,6 +103,9 @@
       "eas": {
         "projectId": "5f011c89-e832-46df-849b-6def9e7cb285"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5f011c89-e832-46df-849b-6def9e7cb285"
     }
   }
 }
