@@ -6,6 +6,8 @@ export default function StackLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
+        navigationBarHidden: true,
+        navigationBarTranslucent: true,
       }}
     >
       <Stack.Screen
