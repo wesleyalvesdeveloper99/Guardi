@@ -5,7 +5,7 @@ import { Colors } from "../../constants/Colors";
 import { View, StyleSheet, useColorScheme } from "react-native";
 
 interface Props {
-  label: string;
+  label: string | undefined;
   children: React.ReactNode;
 }
 
@@ -15,9 +15,11 @@ export const ThemedInputContainer = ({ label, children }: Props) => {
 
   return (
     <View style={styles.container}>
-      <ThemedText style={[styles.label, { color: theme.text }]}>
-        {label}
-      </ThemedText>
+      {label && (
+        <ThemedText style={[styles.label, { color: theme.text }]}>
+          {label}
+        </ThemedText>
+      )}
       {children}
     </View>
   );
@@ -25,6 +27,7 @@ export const ThemedInputContainer = ({ label, children }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginVertical: Theme.spacing.xs,
   },
   label: {

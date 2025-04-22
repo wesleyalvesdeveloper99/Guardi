@@ -16,7 +16,7 @@ const isValidUrl = (url: string) => {
 
 export default function HomeScreen() {
   const [nfcAvailable, setNfcAvailable] = useState(false);
-  const [enableNfc, setEnableNfc] = useState(false);
+  const [enableNfc, setEnableNfc] = useState(true);
   const [url, setUrl] = useState("");
   const [pin, setPin] = useState("");
   const router = useRouter();

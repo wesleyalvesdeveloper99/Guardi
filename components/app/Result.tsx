@@ -37,7 +37,14 @@ const Result = ({
   }, [seconds]);
 
   return (
-    <View style={styles.resultContainer}>
+    <View
+      style={[
+        styles.resultContainer,
+        {
+          backgroundColor: date.success === 1 ? "green" : "red",
+        },
+      ]}
+    >
       {date.url_user_image && (
         <Image
           source={{ uri: `${url}${date.url_user_image}` }}
@@ -49,26 +56,15 @@ const Result = ({
           fontWeight: "bold",
           fontSize: Theme.fontSize.lg,
           marginBottom: Theme.spacing.sm,
-          color:
-            date.success === 1
-              ? currentColors.success
-              : currentColors.error ?? currentColors.text,
+          color: "white",
         }}
       >
         {date.success === 1 ? "Liberado" : "Bloqueado"}
       </ThemedText>
-      <ThemedText
-        style={[
-          styles.messageText,
-          {
-            color: currentColors.text,
-          },
-        ]}
-      >
+      <ThemedText style={[styles.messageText, { color: "white" }]}>
         {date.message}
       </ThemedText>
-
-      <ThemedText style={[styles.userNameText, { color: currentColors.text }]}>
+      <ThemedText style={[styles.userNameText, { color: "white" }]}>
         {date.user_name}
       </ThemedText>
       <View style={styles.buttonContainer}>
@@ -80,10 +76,11 @@ const Result = ({
 
 const styles = StyleSheet.create({
   resultContainer: {
-    justifyContent: "center",
     alignItems: "center",
-    padding: Theme.spacing.xl,
+    justifyContent: "center",
     margin: Theme.spacing.lg,
+    padding: Theme.spacing.xl,
+    borderRadius: Theme.radius.md,
   },
   userImage: {
     width: 300,

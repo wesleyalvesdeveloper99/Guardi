@@ -2,7 +2,6 @@ import React from "react";
 import { Theme } from "../constants/Theme";
 import {
   View,
-  Platform,
   ViewProps,
   ScrollView,
   DimensionValue,
@@ -19,10 +18,7 @@ export const ThemedScreenContrainer = ({
   withPadding = true,
 }: ThemedScreenContrainerProps) => {
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,

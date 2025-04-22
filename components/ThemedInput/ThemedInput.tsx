@@ -1,3 +1,4 @@
+import Scanner from "../app/Scanner";
 import React, { useState } from "react";
 import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
@@ -5,21 +6,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { masks, MasksType } from "@/constants/Masks";
 import { ThemedInputContainer } from "./ThemedInputContainer";
 import {
-  TextInput,
   View,
+  TextInput,
   StyleSheet,
   useColorScheme,
   TouchableOpacity,
 } from "react-native";
-import Scanner from "../app/Scanner";
 
 interface Props {
-  label: string;
+  label?: string;
   value: string;
   mask?: MasksType;
   placeholder?: string;
   scannerEnabled?: boolean;
   secureTextEntry?: boolean;
+  onSubmitEditing?: () => void;
   onChangeText: (text: string) => void;
   keyboardType?: "default" | "email-address" | "numeric";
   inputMode?: "none" | "text" | "numeric" | "tel" | "search" | "email" | "url";
@@ -32,6 +33,7 @@ export const ThemedInput = ({
   inputMode,
   placeholder,
   onChangeText,
+  onSubmitEditing,
   scannerEnabled = false,
   secureTextEntry = false,
   keyboardType = "default",
@@ -70,6 +72,7 @@ export const ThemedInput = ({
           inputMode={inputMode}
           placeholder={placeholder}
           keyboardType={keyboardType}
+          onSubmitEditing={onSubmitEditing}
           onChangeText={handleOnChangeText}
           placeholderTextColor={theme.icon}
           secureTextEntry={secureTextEntry}
