@@ -1,8 +1,8 @@
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
-import { Linking, Alert } from "react-native";
 import Toast from "react-native-toast-message";
 import NfcManager from "react-native-nfc-manager";
+import { Linking, Alert, View } from "react-native";
 import { ThemedLogo } from "@/components/ThemedLogo";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
@@ -15,6 +15,7 @@ const isValidUrl = (url: string) => {
 };
 
 export default function HomeScreen() {
+  const [enableKeyboard, setEnableKeyboard] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(true);
   const [url, setUrl] = useState("");
@@ -72,7 +73,12 @@ export default function HomeScreen() {
 
     router.push({
       pathname: "/(stack)/scanner",
-      params: { url, pin, enableNfc: String(enableNfc) },
+      params: {
+        url,
+        pin,
+        enableNfc: String(enableNfc),
+        enableKeyboard: String(enableKeyboard),
+      },
     });
   };
 
@@ -80,16 +86,27 @@ export default function HomeScreen() {
     <ThemedScreenContrainer>
       <ThemedLogo width={"50%"} aspectRatio={1} />
 
-      {nfcAvailable && (
+      <View style={{ width: "100%", flexDirection: "row" }}>
         <ThemedSwitch
-          IconRight="nfc"
-          value={enableNfc}
-          label="Ativar NFC:"
           IconLeft="close-box"
+          IconRight="keyboard"
+          value={enableKeyboard}
+          label="Ativar Teclado:"
           iconLibrary="MaterialCommunityIcons"
-          onValueChange={(value) => setEnableNfc(value)}
+          onValueChange={(value) => setEnableKeyboard(value)}
         />
-      )}
+
+        {nfcAvailable && (
+          <ThemedSwitch
+            IconRight="nfc"
+            value={enableNfc}
+            label="Ativar NFC:"
+            IconLeft="close-box"
+            iconLibrary="MaterialCommunityIcons"
+            onValueChange={(value) => setEnableNfc(value)}
+          />
+        )}
+      </View>
 
       <ThemedInput
         value={url}

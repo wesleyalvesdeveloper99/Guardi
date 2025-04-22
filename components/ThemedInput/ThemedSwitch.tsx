@@ -60,7 +60,7 @@ export const ThemedSwitch = <T extends IconLibrary>({
   };
 
   return (
-    <ThemedInputContainer label={label}>
+    <ThemedInputContainer labelCenter label={label}>
       <View style={styles.row}>
         {IconLeft && (
           <View style={styles.icon}>{renderIcon(IconLeft, iconLibrary)}</View>

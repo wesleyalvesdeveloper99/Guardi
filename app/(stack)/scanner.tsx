@@ -40,9 +40,9 @@ const ScannerScreen = () => {
   const lockRef = React.useRef(false);
   const [readNfc, setReadNfc] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { url, pin, enableNfc } = useLocalSearchParams();
-  const [date, setDate] = useState<ApiResponse | undefined>(undefined);
   const [manualValue, setManualValue] = useState("");
+  const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
+  const [date, setDate] = useState<ApiResponse | undefined>(undefined);
 
   const handleScannedValue = async (
     value: string,
@@ -163,16 +163,19 @@ const ScannerScreen = () => {
                   />
                 </TouchableOpacity>
               )}
-              <ThemedInput
-                inputMode="text"
-                value={manualValue}
-                onChangeText={setManualValue}
-                placeholder="Digite o código manualmente"
-                onSubmitEditing={() => {
-                  setManualValue("");
-                  handleScannedValue(manualValue, "TECLADO");
-                }}
-              />
+
+              {enableKeyboard === "true" && (
+                <ThemedInput
+                  inputMode="text"
+                  value={manualValue}
+                  onChangeText={setManualValue}
+                  placeholder="Digite o código manualmente"
+                  onSubmitEditing={() => {
+                    setManualValue("");
+                    handleScannedValue(manualValue, "TECLADO");
+                  }}
+                />
+              )}
             </View>
 
             <Scanner

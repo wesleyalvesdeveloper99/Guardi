@@ -5,18 +5,28 @@ import { Colors } from "../../constants/Colors";
 import { View, StyleSheet, useColorScheme } from "react-native";
 
 interface Props {
+  labelCenter?: boolean;
   label: string | undefined;
   children: React.ReactNode;
 }
 
-export const ThemedInputContainer = ({ label, children }: Props) => {
+export const ThemedInputContainer = ({
+  label,
+  children,
+  labelCenter = false,
+}: Props) => {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
   return (
     <View style={styles.container}>
       {label && (
-        <ThemedText style={[styles.label, { color: theme.text }]}>
+        <ThemedText
+          style={[
+            styles.label,
+            { color: theme.text, textAlign: labelCenter ? "center" : "left" },
+          ]}
+        >
           {label}
         </ThemedText>
       )}
