@@ -187,17 +187,20 @@ const ScannerScreen = () => {
             />
             <View
               style={{
-                left: 5,
-                bottom: 1,
-                padding: 1,
+                bottom: 5,
+                padding: 5,
                 opacity: 0.8,
+                width: "90%",
                 borderRadius: 10,
+                alignSelf: "center",
                 position: "absolute",
+                alignItems: "center",
+                justifyContent: "center",
                 backgroundColor: "black",
               }}
             >
               <ThemedText
-                style={{ fontSize: 12, textAlign: "center", color: "white" }}
+                style={{ fontSize: 14, textAlign: "center", color: "white" }}
                 type="defaultSemiBold"
               >{`URL: ${url} PIN: ${pin}`}</ThemedText>
             </View>

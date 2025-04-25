@@ -7,6 +7,7 @@ import { ThemedLogo } from "@/components/ThemedLogo";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import { ThemedSwitch } from "@/components/ThemedInput/ThemedSwitch";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedScreenContrainer } from "@/components/ThemedScreenContrainer";
 
 const isValidUrl = (url: string) => {
@@ -27,7 +28,6 @@ export default function HomeScreen() {
 
     if (supported) {
       const enabled = await NfcManager.isEnabled();
-
       setNfcAvailable(enabled);
 
       if (!enabled) {
@@ -47,15 +47,33 @@ export default function HomeScreen() {
       setNfcAvailable(false);
     }
   };
+
+  const loadStoredData = async () => {
+    try {
+      const storedUrl = await AsyncStorage.getItem("apiUrl");
+      const storedPin = await AsyncStorage.getItem("apiPin");
+
+      if (storedUrl) setUrl(storedUrl);
+      if (storedPin) setPin(storedPin);
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Erro",
+        text2: "Não foi possível carregar os dados salvos.",
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkNfc();
+    loadStoredData();
+  }, []);
+
   useEffect(() => {
     setEnableNfc(nfcAvailable);
   }, [nfcAvailable]);
 
-  useEffect(() => {
-    checkNfc();
-  }, []);
-
-  const goToNextScreen = () => {
+  const goToNextScreen = async () => {
     if (!url.trim() || !pin.trim()) {
       Toast.show({
         type: "error",
@@ -70,6 +88,18 @@ export default function HomeScreen() {
         type: "error",
         text1: "URL inválida",
         text2: "Por favor, insira uma URL válida.",
+      });
+      return;
+    }
+
+    try {
+      await AsyncStorage.setItem("apiUrl", url);
+      await AsyncStorage.setItem("apiPin", pin);
+    } catch {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao salvar",
+        text2: "Não foi possível salvar os dados localmente.",
       });
       return;
     }
