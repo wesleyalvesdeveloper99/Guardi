@@ -185,9 +185,19 @@ const ScannerScreen = () => {
               }`}
               onScan={(value) => handleScannedValue(value, "QRCODE")}
             />
-            <View style={{ position: "absolute", bottom: 1, left: 5 }}>
+            <View
+              style={{
+                left: 5,
+                bottom: 1,
+                padding: 1,
+                opacity: 0.8,
+                borderRadius: 10,
+                position: "absolute",
+                backgroundColor: "black",
+              }}
+            >
               <ThemedText
-                style={{ fontSize: 12, textAlign: "center" }}
+                style={{ fontSize: 12, textAlign: "center", color: "white" }}
                 type="defaultSemiBold"
               >{`URL: ${url} PIN: ${pin}`}</ThemedText>
             </View>
@@ -226,7 +236,7 @@ const styles = StyleSheet.create({
     gap: 10,
     zIndex: 100,
     width: "90%",
-    marginTop: 20,
+    marginTop: 30,
     position: "absolute",
     alignItems: "center",
     flexDirection: "row",

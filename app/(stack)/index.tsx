@@ -16,7 +16,7 @@ const isValidUrl = (url: string) => {
 
 export default function HomeScreen() {
   const [enableKeyboard, setEnableKeyboard] = useState(true);
-  const [nfcAvailable, setNfcAvailable] = useState(true);
+  const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
   const [url, setUrl] = useState("");
   const [pin, setPin] = useState("");
@@ -47,6 +47,9 @@ export default function HomeScreen() {
       setNfcAvailable(false);
     }
   };
+  useEffect(() => {
+    setEnableNfc(nfcAvailable);
+  }, [nfcAvailable]);
 
   useEffect(() => {
     checkNfc();
