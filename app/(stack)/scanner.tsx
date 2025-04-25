@@ -187,7 +187,7 @@ const ScannerScreen = () => {
             />
             <View style={{ position: "absolute", bottom: 1, left: 5 }}>
               <ThemedText
-                style={{ fontSize: 10 }}
+                style={{ fontSize: 12, textAlign: "center" }}
                 type="defaultSemiBold"
               >{`URL: ${url} PIN: ${pin}`}</ThemedText>
             </View>
