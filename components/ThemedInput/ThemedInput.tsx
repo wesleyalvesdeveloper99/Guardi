@@ -69,6 +69,7 @@ export const ThemedInput = ({
       <View style={styles.row}>
         <TextInput
           value={value}
+          autoCapitalize="none"
           inputMode={inputMode}
           placeholder={placeholder}
           keyboardType={keyboardType}

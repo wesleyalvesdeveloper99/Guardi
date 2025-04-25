@@ -18,6 +18,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { ThemedText } from "@/components/ThemedText";
 
 NfcManager.start();
 
@@ -184,6 +185,12 @@ const ScannerScreen = () => {
               }`}
               onScan={(value) => handleScannedValue(value, "QRCODE")}
             />
+            <View style={{ position: "absolute", bottom: 1, left: 5 }}>
+              <ThemedText
+                style={{ fontSize: 10 }}
+                type="defaultSemiBold"
+              >{`URL: ${url} PIN: ${pin}`}</ThemedText>
+            </View>
           </>
         ) : (
           <Result
