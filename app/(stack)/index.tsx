@@ -53,6 +53,8 @@ export default function HomeScreen() {
       const storedUrl = await AsyncStorage.getItem("apiUrl");
       const storedPin = await AsyncStorage.getItem("apiPin");
 
+      console.log(storedUrl);
+
       if (storedUrl) setUrl(storedUrl);
       if (storedPin) setPin(storedPin);
     } catch {
@@ -92,17 +94,8 @@ export default function HomeScreen() {
       return;
     }
 
-    try {
-      await AsyncStorage.setItem("apiUrl", url);
-      await AsyncStorage.setItem("apiPin", pin);
-    } catch {
-      Toast.show({
-        type: "error",
-        text1: "Erro ao salvar",
-        text2: "Não foi possível salvar os dados localmente.",
-      });
-      return;
-    }
+    await AsyncStorage.setItem("apiUrl", url);
+    await AsyncStorage.setItem("apiPin", pin);
 
     router.push({
       pathname: "/(stack)/scanner",

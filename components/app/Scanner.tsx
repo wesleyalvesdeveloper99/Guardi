@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     height: 250,
   },
   scannerText: {
-    bottom: 30,
+    bottom: 40,
     padding: 10,
     fontWeight: "bold",
     textAlign: "center",
