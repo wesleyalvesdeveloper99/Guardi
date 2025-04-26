@@ -2,7 +2,14 @@ import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
 import { Camera, CameraView } from "expo-camera";
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, useColorScheme } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  useColorScheme,
+  Pressable,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const Scanner = ({
   onScan,
@@ -13,8 +20,8 @@ const Scanner = ({
 }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
+  const [torch, setTorch] = useState<"off" | "on">("off");
   const colorScheme = useColorScheme();
-
   const color = Colors[colorScheme ?? "light"];
 
   useEffect(() => {
@@ -45,6 +52,7 @@ const Scanner = ({
     <CameraView
       facing="back"
       style={styles.camera}
+      enableTorch={torch === "on"}
       onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
     >
       <View
@@ -71,6 +79,16 @@ const Scanner = ({
       >
         {text ? text : "Aponte para um QR Code"}
       </Text>
+      <Pressable
+        style={styles.flashIcon}
+        onPress={() => setTorch((prev) => (prev === "on" ? "off" : "on"))}
+      >
+        <Ionicons
+          name={torch === "on" ? "flashlight" : "flashlight-outline"}
+          size={30}
+          color="#fff"
+        />
+      </Pressable>
     </CameraView>
   );
 };
@@ -102,6 +120,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     position: "absolute",
+  },
+  flashIcon: {
+    position: "absolute",
+    left: 20,
+    bottom: "50%",
+    transform: [{ translateY: 15 }],
   },
 });
 
