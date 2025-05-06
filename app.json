@@ -33,12 +33,6 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
         "android.permission.NFC",
-        "CAMERA",
-        "RECORD_AUDIO",
-        "NFC",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.NFC"
       ],
       "config": {
         "usesFeatures": [
