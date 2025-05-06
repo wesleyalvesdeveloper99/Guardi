@@ -15,7 +15,7 @@ Este é um projeto desenvolvido com **Expo** e **React Native**, com o objetivo 
 - [Expo](https://expo.dev/)
 - [React Native](https://reactnative.dev/)
 - [expo-camera](https://docs.expo.dev/versions/latest/sdk/camera/)
-- [expo-nfc](https://docs.expo.dev/versions/latest/sdk/nfc/) 
+- [react-native-nfc-manager](https://github.com/whitedogg13/react-native-nfc-manager)
 - [Expo Router](https://expo.dev/router)
 - [TypeScript](https://www.typescriptlang.org/) 
 
