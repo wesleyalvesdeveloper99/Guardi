@@ -23,6 +23,10 @@ Este é um projeto desenvolvido com **Expo** e **React Native**, com o objetivo 
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/wesley44354/Guardi.git
+   git clone https://github.com/wesleyalvesdeveloper99/Guardi.git
    cd Guardi
    yarn start
+
+---
+
+> Desenvolvido com 💻 por Wesley Alves.
