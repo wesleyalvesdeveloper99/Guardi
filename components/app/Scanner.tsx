@@ -1,34 +1,39 @@
 import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
-import { Camera, CameraView } from "expo-camera";
-import React, { useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useRef, useState, useEffect } from "react";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import {
   View,
   Text,
   StyleSheet,
   useColorScheme,
-  Pressable,
+  TouchableOpacity,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+
+type ModeType = "qrcode" | "face";
 
 const Scanner = ({
   onScan,
-  text,
+  onhandleCapture,
+  mode: initialMode = "qrcode",
 }: {
+  onhandleCapture: (base64: string) => void;
   onScan: (data: string) => void;
-  text?: string;
+  mode?: ModeType;
 }) => {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [scanned, setScanned] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<"off" | "on">("off");
+  const [scanned, setScanned] = useState(false);
+  const [mode, setMode] = useState<ModeType>(initialMode);
+  const [facing, setFacing] = useState<"back" | "front">("back");
+
+  const cameraRef = useRef<CameraView>(null);
   const colorScheme = useColorScheme();
   const color = Colors[colorScheme ?? "light"];
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
+    if (!permission?.granted) requestPermission();
   }, []);
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
@@ -36,11 +41,18 @@ const Scanner = ({
     onScan(data);
   };
 
-  if (hasPermission === null) {
+  const handleCapture = async () => {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync({ base64: true });
+      if (photo?.base64) onhandleCapture(photo.base64);
+    }
+  };
+
+  if (permission?.status === "undetermined") {
     return <Text style={{ color: color.text }}>Carregando...</Text>;
   }
 
-  if (hasPermission === false) {
+  if (!permission?.granted) {
     return (
       <Text style={{ color: color.error }}>
         Sem permissão para acessar a câmera
@@ -50,82 +62,76 @@ const Scanner = ({
 
   return (
     <CameraView
-      facing="back"
-      style={styles.camera}
+      ref={cameraRef}
+      facing={facing}
       enableTorch={torch === "on"}
-      onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+      onBarcodeScanned={
+        mode === "qrcode" && !scanned ? handleBarCodeScanned : undefined
+      }
+      style={{
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        gap: Theme.spacing.xl,
+        justifyContent: "center",
+      }}
     >
+      <View style={styles.overlay} />
+
       <View
-        style={[styles.overlay, { backgroundColor: "rgba(0, 0, 0, 0.5)" }]}
+        style={{
+          width: "50%",
+          borderColor: "#fff",
+          borderWidth: Theme.border.sm,
+          aspectRatio: mode === "face" ? 0.75 : 1,
+          borderRadius: mode === "face" ? 100 : Theme.radius.md,
+        }}
       />
-      <View
-        style={[
-          styles.scannerFrame,
-          {
-            borderColor: "#fff",
-            borderWidth: Theme.border.sm,
-            borderRadius: Theme.radius.md,
-          },
-        ]}
-      />
-      <Text
-        style={[
-          styles.scannerText,
-          {
-            color: "#fff",
-            fontSize: Theme.fontSize.lg,
-          },
-        ]}
-      >
-        {text ? text : "Aponte para um QR Code"}
-      </Text>
-      <Pressable
-        style={styles.flashIcon}
-        onPress={() => setTorch((prev) => (prev === "on" ? "off" : "on"))}
-      >
-        <Ionicons
-          name={torch === "on" ? "flashlight" : "flashlight-outline"}
-          size={30}
-          color="#fff"
-        />
-      </Pressable>
+
+      <View style={{ gap: Theme.spacing.md, flexDirection: "row" }}>
+        {facing === "front" && (
+          <TouchableOpacity
+            onPress={() => setTorch((prev) => (prev === "on" ? "off" : "on"))}
+          >
+            <Ionicons
+              name={torch === "on" ? "flashlight" : "flashlight-outline"}
+              color="#fff"
+              size={30}
+            />
+          </TouchableOpacity>
+        )}
+
+        {mode === "face" && (
+          <TouchableOpacity onPress={handleCapture}>
+            <Ionicons name="camera" size={30} color="#fff" />
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity
+          onPress={() =>
+            setFacing((prev) => (prev === "back" ? "front" : "back"))
+          }
+        >
+          <Ionicons
+            name={
+              facing === "back"
+                ? "camera-reverse-outline"
+                : "camera-reverse-sharp"
+            }
+            size={30}
+            color="#fff"
+          />
+        </TouchableOpacity>
+      </View>
     </CameraView>
   );
 };
 
 const styles = StyleSheet.create({
-  camera: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scannerFrame: {
-    width: 250,
-    height: 250,
-  },
-  scannerText: {
-    bottom: 40,
-    padding: 10,
-    fontWeight: "bold",
-    textAlign: "center",
-    position: "absolute",
-  },
-  flashIcon: {
-    position: "absolute",
-    left: 20,
-    bottom: "50%",
-    transform: [{ translateY: 15 }],
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 

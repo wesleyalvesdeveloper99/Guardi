@@ -3,29 +3,29 @@ import * as Haptics from "expo-haptics";
 import Result from "@/components/app/Result";
 import Scanner from "@/components/app/Scanner";
 import Toast from "react-native-toast-message";
+import { ApiResponse } from "@/interface/response";
 import React, { useState, useEffect } from "react";
 import ThemedLoader from "@/components/ThemedLoader";
+import { ThemedText } from "@/components/ThemedText";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
   View,
+  Keyboard,
   Platform,
   StyleSheet,
-  BackHandler,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
 
 NfcManager.start();
 
 const CHANNELS = {
-  // FACIAL: "FACIAL"
   TECLADO: "TECLADO",
   QRCODE: "QRCODE",
+  FACIAL: "FACIAL",
   NFC: "NFC",
 };
 
@@ -107,16 +107,6 @@ const ScannerScreen = () => {
     }
   }, []);
 
-  useFocusEffect(() => {
-    const onBackPress = () => true;
-
-    const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      onBackPress
-    );
-    return () => subscription.remove();
-  });
-
   const handleStartReading = async () => {
     try {
       setReadNfc(true);
@@ -180,9 +170,8 @@ const ScannerScreen = () => {
             </View>
 
             <Scanner
-              text={`Aponte para um QR Code ${
-                enableNfc === "true" ? "ou coloque a tag sobre o NFC" : ""
-              }`}
+              onhandleCapture={() => {}}
+              mode="face"
               onScan={(value) => handleScannedValue(value, "QRCODE")}
             />
             <View

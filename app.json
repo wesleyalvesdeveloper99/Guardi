@@ -32,7 +32,7 @@
         "NFC",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
-        "android.permission.NFC",
+        "android.permission.NFC"
       ],
       "config": {
         "usesFeatures": [
@@ -85,7 +85,9 @@
           "nfcPermission": "Permitir acesso ao NFC",
           "includeNdefEntitlement": false
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

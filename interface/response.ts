@@ -1,4 +1,4 @@
-type ApiResponse = {
+export type ApiResponse = {
   actions: any[];
   event: number;
   message: string;

@@ -19,8 +19,8 @@ export default function HomeScreen() {
   const [enableKeyboard, setEnableKeyboard] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
-  const [url, setUrl] = useState("");
-  const [pin, setPin] = useState("");
+  const [url, setUrl] = useState("http://nuhsistemas.app.br:9000");
+  const [pin, setPin] = useState("1001");
   const router = useRouter();
 
   const checkNfc = async () => {
@@ -97,7 +97,7 @@ export default function HomeScreen() {
     await AsyncStorage.setItem("apiUrl", url);
     await AsyncStorage.setItem("apiPin", pin);
 
-    router.push({
+    router.replace({
       pathname: "/(stack)/scanner",
       params: {
         url,
