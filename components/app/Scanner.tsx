@@ -10,22 +10,18 @@ import {
   useColorScheme,
   TouchableOpacity,
 } from "react-native";
+import { ScannerModeType } from "@/interface/other";
 
-type ModeType = "qrcode" | "face";
-
-const Scanner = ({
-  onScan,
-  onhandleCapture,
-  mode: initialMode = "qrcode",
-}: {
-  onhandleCapture: (base64: string) => void;
+interface Props {
+  onHandleCapture: (base64: string) => void;
   onScan: (data: string) => void;
-  mode?: ModeType;
-}) => {
+  mode?: ScannerModeType;
+}
+
+const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<"off" | "on">("off");
   const [scanned, setScanned] = useState(false);
-  const [mode, setMode] = useState<ModeType>(initialMode);
   const [facing, setFacing] = useState<"back" | "front">("back");
 
   const cameraRef = useRef<CameraView>(null);
@@ -43,8 +39,12 @@ const Scanner = ({
 
   const handleCapture = async () => {
     if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync({ base64: true });
-      if (photo?.base64) onhandleCapture(photo.base64);
+      const photo = await cameraRef.current.takePictureAsync({
+        base64: true,
+        quality: 0.3,
+        skipProcessing: true,
+      });
+      if (photo?.base64) onHandleCapture(photo.base64);
     }
   };
 
@@ -61,37 +61,49 @@ const Scanner = ({
   }
 
   return (
-    <CameraView
-      ref={cameraRef}
-      facing={facing}
-      enableTorch={torch === "on"}
-      onBarcodeScanned={
-        mode === "qrcode" && !scanned ? handleBarCodeScanned : undefined
-      }
-      style={{
-        flex: 1,
-        width: "100%",
-        height: "100%",
-        alignItems: "center",
-        gap: Theme.spacing.xl,
-        justifyContent: "center",
-      }}
-    >
-      <View style={styles.overlay} />
-
-      <View
+    <>
+      <CameraView
+        ref={cameraRef}
+        facing={facing}
+        enableTorch={torch === "on"}
+        onBarcodeScanned={
+          mode === "QRCODE" && !scanned ? handleBarCodeScanned : undefined
+        }
         style={{
-          width: "50%",
-          borderColor: "#fff",
-          borderWidth: Theme.border.sm,
-          aspectRatio: mode === "face" ? 0.75 : 1,
-          borderRadius: mode === "face" ? 100 : Theme.radius.md,
+          width: "100%",
+          height: "100%",
         }}
       />
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          position: "absolute",
+          gap: Theme.spacing.xl,
+          justifyContent: "center",
+        }}
+      >
+        <View
+          style={{
+            width: "50%",
+            borderColor: "#fff",
+            borderWidth: Theme.border.sm,
+            aspectRatio: mode === "FACIAL" ? 0.75 : 1,
+            borderRadius: mode === "FACIAL" ? 100 : Theme.radius.md,
+          }}
+        />
 
-      <View style={{ gap: Theme.spacing.md, flexDirection: "row" }}>
-        {facing === "front" && (
+        <View
+          style={{
+            gap: Theme.spacing.md,
+            flexDirection: "row",
+            alignItems: "baseline",
+          }}
+        >
           <TouchableOpacity
+            disabled={facing === "front"}
             onPress={() => setTorch((prev) => (prev === "on" ? "off" : "on"))}
           >
             <Ionicons
@@ -100,39 +112,32 @@ const Scanner = ({
               size={30}
             />
           </TouchableOpacity>
-        )}
 
-        {mode === "face" && (
-          <TouchableOpacity onPress={handleCapture}>
-            <Ionicons name="camera" size={30} color="#fff" />
-          </TouchableOpacity>
-        )}
+          {mode === "FACIAL" && (
+            <TouchableOpacity onPress={handleCapture}>
+              <Ionicons name="camera" size={50} color="#fff" />
+            </TouchableOpacity>
+          )}
 
-        <TouchableOpacity
-          onPress={() =>
-            setFacing((prev) => (prev === "back" ? "front" : "back"))
-          }
-        >
-          <Ionicons
-            name={
-              facing === "back"
-                ? "camera-reverse-outline"
-                : "camera-reverse-sharp"
+          <TouchableOpacity
+            onPress={() =>
+              setFacing((prev) => (prev === "back" ? "front" : "back"))
             }
-            size={30}
-            color="#fff"
-          />
-        </TouchableOpacity>
+          >
+            <Ionicons
+              name={
+                facing === "back"
+                  ? "camera-reverse-outline"
+                  : "camera-reverse-sharp"
+              }
+              size={30}
+              color="#fff"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-    </CameraView>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-});
 
 export default Scanner;

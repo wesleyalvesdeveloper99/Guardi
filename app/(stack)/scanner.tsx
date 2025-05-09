@@ -7,6 +7,7 @@ import { ApiResponse } from "@/interface/response";
 import React, { useState, useEffect } from "react";
 import ThemedLoader from "@/components/ThemedLoader";
 import { ThemedText } from "@/components/ThemedText";
+import { CHANNELS_TO_NUMBER } from "@/constants/Scanner";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
@@ -19,22 +20,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import { CHANNELS, ScannerModeType } from "@/interface/other";
 
 NfcManager.start();
-
-const CHANNELS = {
-  TECLADO: "TECLADO",
-  QRCODE: "QRCODE",
-  FACIAL: "FACIAL",
-  NFC: "NFC",
-};
-
-const CHANNELS_TO_NUMBER: Record<string, number> = {
-  NFC: 3,
-  QRCODE: 1,
-  TECLADO: 0,
-  FACIAL: 12,
-};
 
 const ScannerScreen = () => {
   const router = useRouter();
@@ -44,6 +32,7 @@ const ScannerScreen = () => {
   const [manualValue, setManualValue] = useState("");
   const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
+  const [modeType, setmodeType] = useState<ScannerModeType>("QRCODE");
 
   const handleScannedValue = async (
     value: string,
@@ -83,7 +72,7 @@ const ScannerScreen = () => {
           text1: `Erro (${canal})`,
           text2: "Não foi possível comunicar com a URL fornecida!",
         });
-        router.back();
+        router.replace("/(stack)");
       }
     } catch (error: any) {
       console.error(error);
@@ -92,7 +81,7 @@ const ScannerScreen = () => {
         text1: `Erro (${canal})`,
         text2: "Não foi possível conectar com a URL fornecida!",
       });
-      router.back();
+      router.replace("/(stack)");
     } finally {
       setTimeout(() => {
         lockRef.current = false;
@@ -129,6 +118,10 @@ const ScannerScreen = () => {
     }
   };
 
+  const handleIconPress = () => {
+    setmodeType((prev) => (prev === "QRCODE" ? "FACIAL" : "QRCODE"));
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -155,6 +148,17 @@ const ScannerScreen = () => {
                 </TouchableOpacity>
               )}
 
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={handleIconPress}
+              >
+                <MaterialCommunityIcons
+                  color={readNfc ? "green" : "white"}
+                  name={modeType !== "QRCODE" ? "qrcode" : "face-agent"}
+                  size={40}
+                />
+              </TouchableOpacity>
+
               {enableKeyboard === "true" && (
                 <ThemedInput
                   inputMode="text"
@@ -170,8 +174,10 @@ const ScannerScreen = () => {
             </View>
 
             <Scanner
-              onhandleCapture={() => {}}
-              mode="face"
+              mode={modeType}
+              onHandleCapture={(base64) => {
+                handleScannedValue(base64, "FACIAL");
+              }}
               onScan={(value) => handleScannedValue(value, "QRCODE")}
             />
             <View
@@ -224,10 +230,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   buttonContainer: {
     top: 0,
-    gap: 10,
+    gap: 20,
     zIndex: 100,
     width: "90%",
     marginTop: 30,
@@ -237,21 +242,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   iconButton: {
-    padding: 15,
-    paddingLeft: 5,
     alignItems: "center",
     justifyContent: "center",
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    color: "white",
-    paddingHorizontal: 15,
-    marginTop: 20,
-    borderRadius: 10,
-    width: "80%",
-    backgroundColor: "#222",
   },
 });
 

@@ -53,8 +53,6 @@ export default function HomeScreen() {
       const storedUrl = await AsyncStorage.getItem("apiUrl");
       const storedPin = await AsyncStorage.getItem("apiPin");
 
-      console.log(storedUrl);
-
       if (storedUrl) setUrl(storedUrl);
       if (storedPin) setPin(storedPin);
     } catch {
