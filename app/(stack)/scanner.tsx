@@ -9,8 +9,10 @@ import ThemedLoader from "@/components/ThemedLoader";
 import { ThemedText } from "@/components/ThemedText";
 import { CHANNELS_TO_NUMBER } from "@/constants/Scanner";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { CHANNELS, ScannerModeType } from "@/interface/other";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
+import { useScannerStore } from "@/store/useScannerHistoryStore";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import {
   View,
@@ -20,7 +22,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import { CHANNELS, ScannerModeType } from "@/interface/other";
 
 NfcManager.start();
 
@@ -30,6 +31,7 @@ const ScannerScreen = () => {
   const [readNfc, setReadNfc] = useState(false);
   const [loading, setLoading] = useState(false);
   const [manualValue, setManualValue] = useState("");
+  const addHistory = useScannerStore((state) => state.addHistory);
   const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
   const [modeType, setmodeType] = useState<ScannerModeType>("QRCODE");
@@ -40,6 +42,7 @@ const ScannerScreen = () => {
   ) => {
     if (lockRef.current || loading || value === "" || value === undefined)
       return;
+
     lockRef.current = true;
     setLoading(true);
 
@@ -65,8 +68,20 @@ const ScannerScreen = () => {
       const resultData = data.result as ApiResponse;
 
       if (resultData) {
+        addHistory({
+          value: value,
+          channel: canal,
+          createdAt: new Date(),
+          resultData: resultData,
+        });
         setDate(resultData);
       } else {
+        addHistory({
+          value: value,
+          channel: canal,
+          createdAt: new Date(),
+          error: { message: "Não foi possível comunicar com a URL fornecida!" },
+        });
         Toast.show({
           type: "error",
           text1: `Erro (${canal})`,
@@ -75,6 +90,12 @@ const ScannerScreen = () => {
         router.replace("/(stack)");
       }
     } catch (error: any) {
+      addHistory({
+        value: value,
+        channel: canal,
+        createdAt: new Date(),
+        error: error || "Error",
+      });
       console.error(error);
       Toast.show({
         type: "error",

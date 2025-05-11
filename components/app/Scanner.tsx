@@ -44,7 +44,8 @@ const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
         quality: 0.3,
         skipProcessing: true,
       });
-      if (photo?.base64) onHandleCapture(photo.base64);
+      if (photo?.uri) onHandleCapture(photo.uri);
+      // if (photo?.base64) onHandleCapture(photo.base64);
     }
   };
 

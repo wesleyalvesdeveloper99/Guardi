@@ -2,13 +2,14 @@ import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import Toast from "react-native-toast-message";
 import NfcManager from "react-native-nfc-manager";
-import { Linking, Alert, View } from "react-native";
+import { Linking, Alert, View, TouchableOpacity } from "react-native";
 import { ThemedLogo } from "@/components/ThemedLogo";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import { ThemedSwitch } from "@/components/ThemedInput/ThemedSwitch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedScreenContrainer } from "@/components/ThemedScreenContrainer";
+import { FontAwesome } from "@expo/vector-icons";
 
 const isValidUrl = (url: string) => {
   const pattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,6}\/?.*$/;
@@ -150,6 +151,15 @@ export default function HomeScreen() {
       />
 
       <ThemedButton title="Continuar" onPress={goToNextScreen} />
+
+      <TouchableOpacity
+        onPress={() => {
+          router.push("/(stack)/history");
+        }}
+        style={{ position: "absolute", right: 0 }}
+      >
+        <FontAwesome name="history" size={24} color="white" />
+      </TouchableOpacity>
     </ThemedScreenContrainer>
   );
 }

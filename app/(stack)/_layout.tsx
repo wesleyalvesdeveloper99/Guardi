@@ -22,6 +22,13 @@ export default function StackLayout() {
           title: "Scanner",
         }}
       />
+      <Stack.Screen
+        name="history"
+        options={{
+          headerShown: true,
+          title: "History",
+        }}
+      />
     </Stack>
   );
 }

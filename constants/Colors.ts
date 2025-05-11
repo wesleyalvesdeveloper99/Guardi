@@ -33,12 +33,12 @@ export const MyLightTheme = {
   ...NavigationDefaultTheme,
   colors: {
     ...NavigationDefaultTheme.colors,
-    primary: Colors.light.tint,
-    background: Colors.light.background,
-    card: "#f5f5f5",
     text: Colors.light.text,
-    border: "#dcdcdc",
+    border: Colors.light.text,
+    primary: Colors.light.tint,
+    card: Colors.light.background,
     notification: Colors.light.tint,
+    background: Colors.light.background,
   },
 };
 
@@ -46,11 +46,11 @@ export const MyDarkTheme = {
   ...NavigationDarkTheme,
   colors: {
     ...NavigationDarkTheme.colors,
-    primary: Colors.dark.tint,
-    background: Colors.dark.background,
-    card: "#1f1f1f",
     text: Colors.dark.text,
-    border: "#2a2a2a",
+    border: Colors.dark.text,
+    primary: Colors.dark.tint,
+    card: Colors.dark.background,
     notification: Colors.dark.tint,
+    background: Colors.dark.background,
   },
 };

@@ -85,9 +85,7 @@
           "nfcPermission": "Permitir acesso ao NFC",
           "includeNdefEntitlement": false
         }
-      ],
-      "expo-font",
-      "expo-web-browser"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
