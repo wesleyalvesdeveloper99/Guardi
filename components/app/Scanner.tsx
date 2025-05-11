@@ -13,7 +13,7 @@ import {
 import { ScannerModeType } from "@/interface/other";
 
 interface Props {
-  onHandleCapture: (base64: string) => void;
+  onHandleCapture?: (base64: string) => void;
   onScan: (data: string) => void;
   mode?: ScannerModeType;
 }
@@ -44,7 +44,7 @@ const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
         quality: 0.3,
         skipProcessing: true,
       });
-      if (photo?.uri) onHandleCapture(photo.uri);
+      if (photo?.uri && onHandleCapture) onHandleCapture(photo.uri);
       // if (photo?.base64) onHandleCapture(photo.base64);
     }
   };

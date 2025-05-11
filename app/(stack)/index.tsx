@@ -1,15 +1,22 @@
 import { useRouter } from "expo-router";
+import { Colors } from "@/constants/Colors";
 import { useState, useEffect } from "react";
 import Toast from "react-native-toast-message";
+import { FontAwesome } from "@expo/vector-icons";
 import NfcManager from "react-native-nfc-manager";
-import { Linking, Alert, View, TouchableOpacity } from "react-native";
 import { ThemedLogo } from "@/components/ThemedLogo";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import { ThemedSwitch } from "@/components/ThemedInput/ThemedSwitch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedScreenContrainer } from "@/components/ThemedScreenContrainer";
-import { FontAwesome } from "@expo/vector-icons";
+import {
+  Linking,
+  Alert,
+  View,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 
 const isValidUrl = (url: string) => {
   const pattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,6}\/?.*$/;
@@ -21,7 +28,9 @@ export default function HomeScreen() {
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
   const [url, setUrl] = useState("http://nuhsistemas.app.br:9000");
+  const colorScheme = useColorScheme() ?? "light";
   const [pin, setPin] = useState("1001");
+  const theme = Colors[colorScheme];
   const router = useRouter();
 
   const checkNfc = async () => {
@@ -158,7 +167,7 @@ export default function HomeScreen() {
         }}
         style={{ position: "absolute", right: 0 }}
       >
-        <FontAwesome name="history" size={24} color="white" />
+        <FontAwesome name="history" size={24} color={theme.icon} />
       </TouchableOpacity>
     </ThemedScreenContrainer>
   );

@@ -5,19 +5,10 @@ import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
-import {
-  View,
-  Share,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, Share, FlatList, Pressable, StyleSheet } from "react-native";
 
 export default function HistoryScreen() {
   const scheme = useColorScheme();
-  const color = scheme === "dark" ? Colors.dark.text : Colors.light.text;
-  const bgCard = scheme === "dark" ? "#1e1e1e" : "#f0f0f0";
 
   const history = useScannerStore((state) => state.history);
   const clearHistory = useScannerStore((state) => state.clearHistory);
@@ -52,66 +43,79 @@ export default function HistoryScreen() {
   };
 
   return (
-    <>
-      <View style={styles.header}>
-        <Pressable
-          onPress={handleShare}
-          style={({ pressed }) => [
-            styles.iconButton,
-            pressed && styles.pressed,
-          ]}
-        >
-          <Ionicons name="share-outline" size={28} color={color} />
-        </Pressable>
-        <Pressable
-          onPress={clearHistory}
-          style={({ pressed }) => [
-            styles.iconButton,
-            pressed && styles.pressed,
-          ]}
-        >
-          <Ionicons name="trash-outline" size={28} color={color} />
-        </Pressable>
-      </View>
-
-      <FlatList
-        data={history}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={[styles.card, { backgroundColor: bgCard }]}>
-            <ThemedText numberOfLines={1} style={styles.item}>
-              [{item.createdAt.toLocaleTimeString()}] {item.channel}:{" "}
-              {item.value}
+    <FlatList
+      ListHeaderComponent={
+        <View style={styles.header}>
+          <Pressable
+            onPress={handleShare}
+            style={({ pressed }) => [
+              styles.iconButton,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Ionicons
+              name="share-outline"
+              size={28}
+              color={Colors[scheme!].icon}
+            />
+          </Pressable>
+          <Pressable
+            onPress={clearHistory}
+            style={({ pressed }) => [
+              styles.iconButton,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Ionicons
+              name="trash-outline"
+              size={28}
+              color={Colors[scheme!].icon}
+            />
+          </Pressable>
+        </View>
+      }
+      data={history}
+      contentContainerStyle={styles.list}
+      keyExtractor={(_, index) => index.toString()}
+      renderItem={({ item }) => (
+        <View style={[styles.card, { borderColor: Colors[scheme!].icon }]}>
+          <ThemedText
+            style={{ color: Colors[scheme!].icon }}
+            type="defaultSemiBold"
+            numberOfLines={1}
+          >
+            [{item.createdAt.toLocaleTimeString()}] {item.channel}: {item.value}
+          </ThemedText>
+          {item.error && (
+            <ThemedText style={{ color: Colors[scheme!].error }} type="default">
+              Erro: {JSON.stringify(item.error.message, null, 2)}
             </ThemedText>
-            {item.error && (
-              <ThemedText style={styles.error}>
-                Erro: {JSON.stringify(item.error.message, null, 2)}
-              </ThemedText>
-            )}
-            {item.resultData && (
-              <ThemedText>
-                Result: {JSON.stringify(item.resultData, null, 2)}
-              </ThemedText>
-            )}
-          </View>
-        )}
-        ListEmptyComponent={
-          <ThemedText style={styles.empty}>Nenhum histórico</ThemedText>
-        }
-      />
-    </>
+          )}
+          {item.resultData && (
+            <ThemedText
+              style={{ color: Colors[scheme!].success }}
+              type="default"
+            >
+              Result: {JSON.stringify(item.resultData, null, 2)}
+            </ThemedText>
+          )}
+        </View>
+      )}
+      ListEmptyComponent={
+        <ThemedText style={styles.empty}>Nenhum histórico</ThemedText>
+      }
+    />
   );
 }
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    justifyContent: "center",
     gap: Theme.spacing.lg,
+    justifyContent: "center",
     paddingTop: Theme.spacing.md,
-    paddingHorizontal: Theme.spacing.md,
     marginBottom: Theme.spacing.sm,
+    paddingHorizontal: Theme.spacing.md,
   },
   iconButton: {
     padding: Theme.spacing.sm,
@@ -124,18 +128,14 @@ const styles = StyleSheet.create({
     padding: Theme.spacing.md,
   },
   card: {
-    borderRadius: Theme.border.md,
-    padding: Theme.spacing.md,
     marginBottom: Theme.spacing.sm,
-    elevation: 2,
+    borderRadius: Theme.border.lg,
+    borderWidth: Theme.border.sm,
+    padding: Theme.spacing.md,
+    gap: Theme.spacing.sm,
   },
   item: {
     fontSize: Theme.fontSize.md,
-  },
-  error: {
-    color: "red",
-    marginTop: 4,
-    fontSize: Theme.fontSize.sm,
   },
   empty: {
     textAlign: "center",
