@@ -1,16 +1,10 @@
 import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { ScannerModeType } from "@/interface/other";
 import React, { useRef, useState, useEffect } from "react";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import {
-  View,
-  Text,
-  StyleSheet,
-  useColorScheme,
-  TouchableOpacity,
-} from "react-native";
-import { ScannerModeType } from "@/interface/other";
+import { View, Text, useColorScheme, TouchableOpacity } from "react-native";
 
 interface Props {
   onHandleCapture?: (base64: string) => void;
@@ -18,7 +12,7 @@ interface Props {
   mode?: ScannerModeType;
 }
 
-const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
+const Scanner = ({ onScan, onHandleCapture, mode = "DEFAULT" }: Props) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<"off" | "on">("off");
   const [scanned, setScanned] = useState(false);
@@ -41,11 +35,11 @@ const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
         base64: true,
-        quality: 0.3,
+        quality: 0.1,
         skipProcessing: true,
       });
-      if (photo?.uri && onHandleCapture) onHandleCapture(photo.uri);
-      // if (photo?.base64) onHandleCapture(photo.base64);
+
+      if (photo?.base64 && onHandleCapture) onHandleCapture(photo.base64);
     }
   };
 
@@ -68,7 +62,7 @@ const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
         facing={facing}
         enableTorch={torch === "on"}
         onBarcodeScanned={
-          mode === "QRCODE" && !scanned ? handleBarCodeScanned : undefined
+          mode === "DEFAULT" && !scanned ? handleBarCodeScanned : undefined
         }
         style={{
           width: "100%",
@@ -88,11 +82,12 @@ const Scanner = ({ onScan, onHandleCapture, mode = "QRCODE" }: Props) => {
       >
         <View
           style={{
-            width: "50%",
+            width: "60%",
             borderColor: "#fff",
             borderWidth: Theme.border.sm,
-            aspectRatio: mode === "FACIAL" ? 0.75 : 1,
-            borderRadius: mode === "FACIAL" ? 100 : Theme.radius.md,
+            aspectRatio: mode === "FACIAL" ? 0.7 : 1,
+            borderRadius:
+              mode === "FACIAL" ? Theme.radius.full : Theme.radius.md,
           }}
         />
 

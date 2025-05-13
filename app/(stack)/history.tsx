@@ -4,7 +4,10 @@ import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
-import { useScannerStore } from "@/store/useScannerHistoryStore";
+import {
+  ScannerHistoryType,
+  useScannerStore,
+} from "@/store/useScannerHistoryStore";
 import { View, Share, FlatList, Pressable, StyleSheet } from "react-native";
 
 export default function HistoryScreen() {
@@ -16,9 +19,8 @@ export default function HistoryScreen() {
   const handleShare = async () => {
     const content = history
       .map((item) => {
-        let sharedMessage = `[${new Date(item.createdAt).toLocaleString()}] ${
-          item.channel
-        }: ${item.value}`;
+        let sharedMessage = sanitizeResult(item);
+
         if (item.error) {
           sharedMessage += `\nErro: ${JSON.stringify(
             item.error.message,
@@ -40,6 +42,13 @@ export default function HistoryScreen() {
       .join("\n\n");
 
     await Share.share({ message: content });
+  };
+
+  const sanitizeResult = (item: ScannerHistoryType) => {
+    return `[${new Date(item.createdAt).toLocaleString()}] ${item.channel} ${
+      item.modeType === "FACIAL" ? "[imagem base64 omitida]" : item.value
+    }
+  `;
   };
 
   return (
@@ -84,9 +93,7 @@ export default function HistoryScreen() {
             type="defaultSemiBold"
             numberOfLines={1}
           >
-            {`[${new Date(item.createdAt).toLocaleString()}] ${item.channel}: ${
-              item.value
-            }`}
+            {sanitizeResult(item)}
           </ThemedText>
           {item.error && (
             <ThemedText style={{ color: Colors[scheme!].error }} type="default">

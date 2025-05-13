@@ -1,14 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { ScannerModeType } from "@/interface/other";
 import { ApiResponse } from "@/interface/response";
 import { AxiosError } from "axios";
 import { create } from "zustand";
 
-type ScannerHistoryType = {
+export type ScannerHistoryType = {
   value: string;
   channel: string;
   createdAt: Date;
   resultData?: ApiResponse;
+  modeType: ScannerModeType;
   error?: Partial<AxiosError>;
 };
 

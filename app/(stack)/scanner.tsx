@@ -30,9 +30,9 @@ const ScannerScreen = () => {
   const lockRef = React.useRef(false);
   const [readNfc, setReadNfc] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [manualValue, setManualValue] = useState("");
+  const [manualValue, setManualValue] = useState<any>("");
   const addHistory = useScannerStore((state) => state.addHistory);
-  const [modeType, setmodeType] = useState<ScannerModeType>("QRCODE");
+  const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
   const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
 
@@ -43,19 +43,36 @@ const ScannerScreen = () => {
     if (lockRef.current || loading || value === "" || value === undefined)
       return;
 
-    lockRef.current = true;
-    setLoading(true);
+    if (!(modeType === "FACIAL" && typeof manualValue !== "object")) {
+      lockRef.current = true;
+      setLoading(true);
+    }
 
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     try {
-      const formData = new FormData();
-      formData.append("pin_number", String(pin));
-      formData.append("qrcode_value", value);
+      const formData: any = new FormData();
 
-      const canalNumber = CHANNELS_TO_NUMBER[canal];
+      if (modeType === "FACIAL" && typeof manualValue === "object") {
+        formData.append("credenciamento", value);
 
-      formData.append("canal", String(canalNumber));
+        manualValue.forEach(([key, value]: any) => {
+          formData.append(key, value);
+        });
+      } else {
+        formData.append("pin_number", String(pin));
+        formData.append("qrcode_value", value);
+
+        const canalNumber = CHANNELS_TO_NUMBER[canal];
+
+        formData.append("canal", String(canalNumber));
+      }
+
+      if (modeType === "FACIAL" && typeof manualValue !== "object") {
+        setManualValue(formData._parts);
+
+        return;
+      }
 
       const { data } = await axios.post(
         `${String(url)}/validar_celular`,
@@ -69,6 +86,7 @@ const ScannerScreen = () => {
 
       if (resultData) {
         addHistory({
+          modeType,
           value: value,
           channel: canal,
           createdAt: new Date(),
@@ -77,6 +95,7 @@ const ScannerScreen = () => {
         setDate(resultData);
       } else {
         addHistory({
+          modeType,
           value: value,
           channel: canal,
           createdAt: new Date(),
@@ -91,6 +110,7 @@ const ScannerScreen = () => {
       }
     } catch (error: any) {
       addHistory({
+        modeType,
         value: value,
         channel: canal,
         createdAt: new Date(),
@@ -140,7 +160,7 @@ const ScannerScreen = () => {
   };
 
   const handleIconPress = () => {
-    setmodeType((prev) => (prev === "QRCODE" ? "FACIAL" : "QRCODE"));
+    setmodeType((prev) => (prev === "DEFAULT" ? "FACIAL" : "DEFAULT"));
   };
 
   return (
@@ -155,47 +175,58 @@ const ScannerScreen = () => {
         ) : !date ? (
           <>
             <View style={styles.buttonContainer}>
-              {enableNfc === "true" && (
-                <TouchableOpacity
-                  style={styles.iconButton}
-                  onPress={handleStartReading}
-                  disabled={Platform.OS === "android"}
+              {typeof manualValue !== "object" ? (
+                <>
+                  {enableNfc === "true" && (
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={handleStartReading}
+                      disabled={Platform.OS === "android"}
+                    >
+                      <MaterialCommunityIcons
+                        name="credit-card-wireless-outline"
+                        size={40}
+                        color={readNfc ? "green" : "white"}
+                      />
+                    </TouchableOpacity>
+                  )}
+
+                  <TouchableOpacity
+                    style={styles.iconButton}
+                    onPress={handleIconPress}
+                  >
+                    <MaterialCommunityIcons
+                      color={modeType === "FACIAL" ? "green" : "white"}
+                      name={"face-agent"}
+                      size={40}
+                    />
+                  </TouchableOpacity>
+
+                  {enableKeyboard === "true" && (
+                    <ThemedInput
+                      inputMode="text"
+                      value={manualValue}
+                      onChangeText={setManualValue}
+                      placeholder="Digite o código manualmente"
+                      onSubmitEditing={() => {
+                        setManualValue("");
+                        handleScannedValue(manualValue, "TECLADO");
+                      }}
+                    />
+                  )}
+                </>
+              ) : (
+                <ThemedText
+                  type="subtitle"
+                  style={{ textAlign: "center", width: "100%" }}
                 >
-                  <MaterialCommunityIcons
-                    name="credit-card-wireless-outline"
-                    size={40}
-                    color={readNfc ? "green" : "white"}
-                  />
-                </TouchableOpacity>
-              )}
-
-              <TouchableOpacity
-                style={styles.iconButton}
-                onPress={handleIconPress}
-              >
-                <MaterialCommunityIcons
-                  color={readNfc ? "green" : "white"}
-                  name={modeType !== "QRCODE" ? "qrcode" : "face-agent"}
-                  size={40}
-                />
-              </TouchableOpacity>
-
-              {enableKeyboard === "true" && (
-                <ThemedInput
-                  inputMode="text"
-                  value={manualValue}
-                  onChangeText={setManualValue}
-                  placeholder="Digite o código manualmente"
-                  onSubmitEditing={() => {
-                    setManualValue("");
-                    handleScannedValue(manualValue, "TECLADO");
-                  }}
-                />
+                  Texto
+                </ThemedText>
               )}
             </View>
 
             <Scanner
-              mode={modeType}
+              mode={typeof manualValue === "object" ? modeType : "DEFAULT"}
               onHandleCapture={(base64) => {
                 handleScannedValue(base64, "FACIAL");
               }}
@@ -230,6 +261,7 @@ const ScannerScreen = () => {
             onReset={() => {
               setLoading(false);
               setDate(undefined);
+              setManualValue("");
               if (
                 Platform.OS === "android" &&
                 enableNfc === "true" &&

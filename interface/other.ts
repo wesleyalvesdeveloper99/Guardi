@@ -5,4 +5,4 @@ export const CHANNELS = {
   NFC: "NFC",
 };
 
-export type ScannerModeType = "FACIAL" | "QRCODE";
+export type ScannerModeType = "FACIAL" | "DEFAULT";
