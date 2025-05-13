@@ -24,12 +24,14 @@ const isValidUrl = (url: string) => {
 };
 
 export default function HomeScreen() {
+  const [url, setUrl] = useState(
+    __DEV__ ? "http://nuhsistemas.app.br:9000" : ""
+  );
   const [enableKeyboard, setEnableKeyboard] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
-  const [url, setUrl] = useState("http://nuhsistemas.app.br:9000");
+  const [pin, setPin] = useState(__DEV__ ? "1001" : "");
   const colorScheme = useColorScheme() ?? "light";
-  const [pin, setPin] = useState("1001");
   const theme = Colors[colorScheme];
   const router = useRouter();
 

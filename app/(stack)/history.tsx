@@ -16,9 +16,9 @@ export default function HistoryScreen() {
   const handleShare = async () => {
     const content = history
       .map((item) => {
-        const time = item.createdAt.toLocaleTimeString();
-        let sharedMessage = `[${time}] ${item.channel}: ${item.value}`;
-
+        let sharedMessage = `[${new Date(item.createdAt).toLocaleString()}] ${
+          item.channel
+        }: ${item.value}`;
         if (item.error) {
           sharedMessage += `\nErro: ${JSON.stringify(
             item.error.message,
@@ -84,7 +84,9 @@ export default function HistoryScreen() {
             type="defaultSemiBold"
             numberOfLines={1}
           >
-            [{item.createdAt.toLocaleTimeString()}] {item.channel}: {item.value}
+            {`[${new Date(item.createdAt).toLocaleString()}] ${item.channel}: ${
+              item.value
+            }`}
           </ThemedText>
           {item.error && (
             <ThemedText style={{ color: Colors[scheme!].error }} type="default">

@@ -32,9 +32,9 @@ const ScannerScreen = () => {
   const [loading, setLoading] = useState(false);
   const [manualValue, setManualValue] = useState("");
   const addHistory = useScannerStore((state) => state.addHistory);
-  const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
-  const [date, setDate] = useState<ApiResponse | undefined>(undefined);
   const [modeType, setmodeType] = useState<ScannerModeType>("QRCODE");
+  const [date, setDate] = useState<ApiResponse | undefined>(undefined);
+  const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
 
   const handleScannedValue = async (
     value: string,

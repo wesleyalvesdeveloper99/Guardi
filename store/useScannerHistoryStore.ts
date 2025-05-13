@@ -1,5 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { ApiResponse } from "@/interface/response";
-import { persist } from "zustand/middleware";
 import { AxiosError } from "axios";
 import { create } from "zustand";
 
@@ -12,21 +13,22 @@ type ScannerHistoryType = {
 };
 
 type ScannerStore = {
+  clearHistory: () => void;
   history: ScannerHistoryType[];
   addHistory: (item: ScannerHistoryType) => void;
-  clearHistory: () => void;
 };
 
 export const useScannerStore = create<ScannerStore>()(
   persist(
     (set) => ({
       history: [],
+      clearHistory: () => set({ history: [] }),
       addHistory: (item) =>
         set((state) => ({ history: [item, ...state.history] })),
-      clearHistory: () => set({ history: [] }),
     }),
     {
       name: "scanner-history",
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
