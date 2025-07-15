@@ -4,6 +4,7 @@ import { Colors } from "../../constants/Colors";
 import { ThemedButton } from "../ThemedButton";
 import { Theme } from "../../constants/Theme";
 import { ThemedText } from "../ThemedText";
+import { Audio } from "expo-av";
 
 const Result = ({
   url,
@@ -35,6 +36,23 @@ const Result = ({
       onReset();
     }
   }, [seconds]);
+
+  useEffect(() => {
+    const playSound = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          {
+            uri:
+              date.success === 1
+                ? require("../../assets/sounds/success.mp3")
+                : require("../../assets/sounds/error.mp3"),
+          },
+          { shouldPlay: true }
+        );
+      } catch (error) {}
+    };
+    playSound();
+  }, []);
 
   return (
     <View

@@ -28,10 +28,10 @@ export default function HomeScreen() {
     __DEV__ ? "http://nuhsistemas.app.br:9000" : ""
   );
   const [enableKeyboard, setEnableKeyboard] = useState(true);
-  const [enableCam, setEnableCam] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
   const [pin, setPin] = useState(__DEV__ ? "1001" : "");
+  const [enableCam, setEnableCam] = useState(true);
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const router = useRouter();
@@ -124,34 +124,23 @@ export default function HomeScreen() {
     <ThemedScreenContrainer>
       <ThemedLogo width={"50%"} aspectRatio={1} />
 
-      <View style={{ width: "100%", flexDirection: "row" }}>
+      <View style={{ width: "100%", flexDirection: "column" }}>
         <ThemedSwitch
-          IconLeft="close-box"
-          IconRight="keyboard"
           value={enableKeyboard}
           label="Ativar Teclado:"
-          iconLibrary="MaterialCommunityIcons"
           onValueChange={(value) => setEnableKeyboard(value)}
+        />
+        <ThemedSwitch
+          value={enableCam}
+          label="Ativar Cam:"
+          onValueChange={(value) => setEnableCam(value)}
         />
 
         {nfcAvailable && (
           <ThemedSwitch
-            IconRight="nfc"
             value={enableNfc}
             label="Ativar NFC:"
-            IconLeft="close-box"
-            iconLibrary="MaterialCommunityIcons"
             onValueChange={(value) => setEnableNfc(value)}
-          />
-        )}
-        {true && (
-          <ThemedSwitch
-            IconRight="camera"
-            value={enableCam}
-            label="Ativar Cam:"
-            IconLeft="line-scan"
-            iconLibrary="MaterialCommunityIcons"
-            onValueChange={(value) => setEnableCam(value)}
           />
         )}
       </View>

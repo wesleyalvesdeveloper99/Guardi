@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as Haptics from "expo-haptics";
+import { Colors } from "@/constants/Colors";
 import Result from "@/components/app/Result";
 import Scanner from "@/components/app/Scanner";
 import Toast from "react-native-toast-message";
@@ -14,15 +15,16 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
+import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 import {
   View,
   Keyboard,
   Platform,
   StyleSheet,
+  useColorScheme,
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 
 NfcManager.start();
 
@@ -31,6 +33,7 @@ const ScannerScreen = () => {
   const lockRef = React.useRef(false);
   const [readNfc, setReadNfc] = useState(false);
   const [loading, setLoading] = useState(false);
+  const colors = Colors[useColorScheme() ?? "light"];
   const [manualValue, setManualValue] = useState<any>("");
   const addHistory = useScannerStore((state) => state.addHistory);
   const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
@@ -246,8 +249,8 @@ const ScannerScreen = () => {
               />
             ) : (
               <MaterialCommunityIcons
+                color={colors.icon}
                 name="line-scan"
-                color="white"
                 size={200}
               />
             )}
