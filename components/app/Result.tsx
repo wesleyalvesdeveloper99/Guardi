@@ -40,7 +40,7 @@ const Result = ({
   useEffect(() => {
     const playSound = async () => {
       try {
-        const { sound } = await Audio.Sound.createAsync(
+        await Audio.Sound.createAsync(
           {
             uri:
               date.success === 1

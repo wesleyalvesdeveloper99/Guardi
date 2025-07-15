@@ -25,6 +25,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import { Audio } from "expo-av";
 
 NfcManager.start();
 
@@ -111,6 +112,10 @@ const ScannerScreen = () => {
           text1: `Erro (${canal})`,
           text2: "Não foi possível comunicar com a URL fornecida!",
         });
+        await Audio.Sound.createAsync(
+          require("../../assets/sounds/error.mp3"),
+          { shouldPlay: true }
+        );
         router.replace("/(stack)");
       }
     } catch (error: any) {
@@ -122,6 +127,9 @@ const ScannerScreen = () => {
         error: error || "Error",
       });
       console.error(error);
+      await Audio.Sound.createAsync(require("../../assets/sounds/error.mp3"), {
+        shouldPlay: true,
+      });
       Toast.show({
         type: "error",
         text1: `Erro (${canal})`,

@@ -86,6 +86,7 @@ export const ThemedInput = ({
             },
           ]}
         />
+
         {scannerEnabled && !scanning && (
           <Ionicons
             size={24}
