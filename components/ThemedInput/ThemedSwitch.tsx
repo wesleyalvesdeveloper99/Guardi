@@ -86,6 +86,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   icon: {
-    paddingHorizontal: Theme.spacing.sm,
+    // paddingHorizontal: Theme.spacing.sm,
   },
 });

@@ -28,6 +28,7 @@ export default function HomeScreen() {
     __DEV__ ? "http://nuhsistemas.app.br:9000" : ""
   );
   const [enableKeyboard, setEnableKeyboard] = useState(true);
+  const [enableCam, setEnableCam] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
   const [pin, setPin] = useState(__DEV__ ? "1001" : "");
@@ -113,6 +114,7 @@ export default function HomeScreen() {
         url,
         pin,
         enableNfc: String(enableNfc),
+        enableCam: String(enableCam),
         enableKeyboard: String(enableKeyboard),
       },
     });
@@ -140,6 +142,16 @@ export default function HomeScreen() {
             IconLeft="close-box"
             iconLibrary="MaterialCommunityIcons"
             onValueChange={(value) => setEnableNfc(value)}
+          />
+        )}
+        {true && (
+          <ThemedSwitch
+            IconRight="camera"
+            value={enableCam}
+            label="Ativar Cam:"
+            IconLeft="line-scan"
+            iconLibrary="MaterialCommunityIcons"
+            onValueChange={(value) => setEnableCam(value)}
           />
         )}
       </View>

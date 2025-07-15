@@ -22,6 +22,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 
 NfcManager.start();
 
@@ -34,7 +35,8 @@ const ScannerScreen = () => {
   const addHistory = useScannerStore((state) => state.addHistory);
   const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
-  const { url, pin, enableNfc, enableKeyboard } = useLocalSearchParams();
+  const { url, pin, enableNfc, enableKeyboard, enableCam } =
+    useLocalSearchParams();
 
   const handleScannedValue = async (
     value: string,
@@ -159,6 +161,16 @@ const ScannerScreen = () => {
     }
   };
 
+  useEffect(() => {
+    if (enableCam === "false") {
+      const cleanup = ReactNativeSunmiBroadcastScanner.onBarcodeRead((ev) => {
+        handleScannedValue(ev.code, "QRCODE");
+      });
+
+      return () => cleanup.remove();
+    }
+  }, []);
+
   const handleIconPress = () => {
     setmodeType((prev) => (prev === "DEFAULT" ? "FACIAL" : "DEFAULT"));
   };
@@ -190,24 +202,24 @@ const ScannerScreen = () => {
                       />
                     </TouchableOpacity>
                   )}
-
-                  <TouchableOpacity
-                    style={styles.iconButton}
-                    onPress={handleIconPress}
-                  >
-                    <MaterialCommunityIcons
-                      color={modeType === "FACIAL" ? "green" : "white"}
-                      name={"face-agent"}
-                      size={40}
-                    />
-                  </TouchableOpacity>
-
+                  {enableCam === "true" && (
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={handleIconPress}
+                    >
+                      <MaterialCommunityIcons
+                        color={modeType === "FACIAL" ? "green" : "white"}
+                        name={"face-agent"}
+                        size={40}
+                      />
+                    </TouchableOpacity>
+                  )}
                   {enableKeyboard === "true" && (
                     <ThemedInput
                       inputMode="text"
                       value={manualValue}
                       onChangeText={setManualValue}
-                      placeholder="Digite o código manualmente"
+                      placeholder="Digite o código manual"
                       onSubmitEditing={() => {
                         setManualValue("");
                         handleScannedValue(manualValue, "TECLADO");
@@ -224,14 +236,21 @@ const ScannerScreen = () => {
                 </ThemedText>
               )}
             </View>
-
-            <Scanner
-              mode={typeof manualValue === "object" ? modeType : "DEFAULT"}
-              onHandleCapture={(base64) => {
-                handleScannedValue(base64, "FACIAL");
-              }}
-              onScan={(value) => handleScannedValue(value, "QRCODE")}
-            />
+            {enableCam === "true" ? (
+              <Scanner
+                mode={typeof manualValue === "object" ? modeType : "DEFAULT"}
+                onHandleCapture={(base64) => {
+                  handleScannedValue(base64, "FACIAL");
+                }}
+                onScan={(value) => handleScannedValue(value, "QRCODE")}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name="line-scan"
+                color="white"
+                size={200}
+              />
+            )}
             <View
               style={{
                 bottom: 5,
