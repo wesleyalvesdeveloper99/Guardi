@@ -1,9 +1,9 @@
 import Scanner from "../app/Scanner";
-import React, { useState } from "react";
 import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { masks, MasksType } from "@/constants/Masks";
+import React, { useRef, useState, useEffect } from "react";
 import { ThemedInputContainer } from "./ThemedInputContainer";
 import {
   View,
@@ -11,6 +11,7 @@ import {
   StyleSheet,
   useColorScheme,
   TouchableOpacity,
+  TextInput as RNTextInput,
 } from "react-native";
 
 interface Props {
@@ -24,6 +25,7 @@ interface Props {
   onChangeText: (text: string) => void;
   keyboardType?: "default" | "email-address" | "numeric";
   inputMode?: "none" | "text" | "numeric" | "tel" | "search" | "email" | "url";
+  getRef?: (ref: RNTextInput | null) => void;
 }
 
 export const ThemedInput = ({
@@ -37,10 +39,19 @@ export const ThemedInput = ({
   scannerEnabled = false,
   secureTextEntry = false,
   keyboardType = "default",
+  getRef,
 }: Props) => {
   const [scanning, setScanning] = useState(false);
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+
+  const inputRef = useRef<RNTextInput>(null);
+
+  useEffect(() => {
+    if (getRef) {
+      getRef(inputRef.current);
+    }
+  }, [getRef]);
 
   const handleOnChangeText = (text: string) => {
     let value = text;
@@ -68,9 +79,10 @@ export const ThemedInput = ({
     <ThemedInputContainer label={label}>
       <View style={styles.row}>
         <TextInput
+          ref={inputRef}
           value={value}
-          autoCapitalize="none"
           inputMode={inputMode}
+          autoCapitalize="none"
           placeholder={placeholder}
           keyboardType={keyboardType}
           onSubmitEditing={onSubmitEditing}

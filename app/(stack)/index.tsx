@@ -30,7 +30,7 @@ export default function HomeScreen() {
   const [enableKeyboard, setEnableKeyboard] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
-  const [pin, setPin] = useState(__DEV__ ? "1001" : "");
+  const [pin, setPin] = useState(__DEV__ ? "198" : "");
   const [enableCam, setEnableCam] = useState(true);
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
