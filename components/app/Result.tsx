@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, useColorScheme } from "react-native";
+import { View, StyleSheet, Image, useColorScheme, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import { ThemedButton } from "../ThemedButton";
@@ -40,16 +40,22 @@ const Result = ({
   useEffect(() => {
     const playSound = async () => {
       try {
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+        });
+
         await Audio.Sound.createAsync(
-          {
-            uri:
-              date.success === 1
-                ? require("../../assets/sounds/success.mp3")
-                : require("../../assets/sounds/error.mp3"),
-          },
+          date.success === 1
+            ? require("../../assets/sounds/success.mp3")
+            : require("../../assets/sounds/error.mp3"),
           { shouldPlay: true }
         );
-      } catch (error) {}
+      } catch (error: any) {
+        Alert.alert(
+          "Erro ao reproduzir áudio",
+          error?.message || String(error)
+        );
+      }
     };
     playSound();
   }, []);

@@ -148,7 +148,7 @@ export default function HomeScreen() {
       <ThemedInput
         value={url}
         scannerEnabled
-        inputMode={"url"}
+        inputMode={"text"}
         label="URL da API:"
         onChangeText={setUrl}
         placeholder="Digite a URL da API"
