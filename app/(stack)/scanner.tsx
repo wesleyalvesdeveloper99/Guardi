@@ -42,7 +42,7 @@ const ScannerScreen = () => {
   const addHistory = useScannerStore((state) => state.addHistory);
   const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
-  const { url, pin, enableNfc, enableKeyboard, enableCam } =
+  const { url, pin, enableNfc, enableKeyboard, enableCam, setor } =
     useLocalSearchParams();
 
   const handleScannedValue = async (
@@ -274,9 +274,11 @@ const ScannerScreen = () => {
             >
               <ThemedText
                 numberOfLines={1}
-                style={{ fontSize: 14, textAlign: "center", color: "white" }}
                 type="defaultSemiBold"
-              >{`PIN: ${pin} URL: ${url}`}</ThemedText>
+                style={{ fontSize: 10, textAlign: "center", color: "white" }}
+              >{`${
+                setor !== "undefined" && `SETOR: ${setor}`
+              } PIN: ${pin} URL: ${url}`}</ThemedText>
             </View>
           </>
         ) : (

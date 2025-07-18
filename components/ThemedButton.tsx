@@ -3,10 +3,11 @@ import * as Haptics from "expo-haptics";
 import { Theme } from "../constants/Theme";
 import { Colors } from "../constants/Colors";
 import {
-  Pressable,
   Text,
-  useColorScheme,
+  Pressable,
   StyleSheet,
+  useColorScheme,
+  ActivityIndicator,
   GestureResponderEvent,
 } from "react-native";
 
@@ -14,14 +15,15 @@ interface Props {
   title: string;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
 }
 
-export const ThemedButton = ({ title, onPress, disabled }: Props) => {
+export const ThemedButton = ({ title, onPress, disabled, loading }: Props) => {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
   const handlePress = () => {
-    onPress();
+    if (!loading) onPress();
   };
 
   const handlePressIn = (ev: GestureResponderEvent) => {
@@ -34,23 +36,27 @@ export const ThemedButton = ({ title, onPress, disabled }: Props) => {
     <Pressable
       onPress={handlePress}
       onPressIn={handlePressIn}
-      disabled={disabled}
+      disabled={disabled || loading}
       style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: disabled ? theme.icon : theme.tint,
+          backgroundColor: disabled || loading ? theme.icon : theme.tint,
           opacity: pressed ? 0.8 : 1,
         },
       ]}
     >
-      <Text
-        style={[
-          styles.text,
-          { color: colorScheme === "dark" ? "#000" : "#fff" },
-        ]}
-      >
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={colorScheme === "dark" ? "#000" : "#fff"} />
+      ) : (
+        <Text
+          style={[
+            styles.text,
+            { color: colorScheme === "dark" ? "#000" : "#fff" },
+          ]}
+        >
+          {title}
+        </Text>
+      )}
     </Pressable>
   );
 };

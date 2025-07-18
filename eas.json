@@ -1,27 +1,65 @@
 {
   "cli": {
-    "version": ">= 16.3.1",
+    "version": ">= 3.3.2",
+    "requireCommit": false,
     "appVersionSource": "remote"
   },
   "build": {
+    "base": {
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.1"
+      }
+    },
+    "development": {
+      "node": "20.17.0",
+      "channel": "development",
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "dev": {
+      "node": "20.17.0",
+      "channel": "development",
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "simulator": {
+      "node": "20.17.0",
+      "channel": "simulator",
+      "developmentClient": true,
+      "ios": {
+        "simulator": true
+      },
+      "distribution": "internal"
+    },
     "preview": {
-      "distribution": "internal",
+      "node": "20.17.0",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       },
-      "channel": "preview"
-    },
-    "dev": {
-      "distribution": "internal",
-      "developmentClient": true,
-      "channel": "dev"
+      "ios": {
+        "simulator": true
+      },
+      "distribution": "internal"
     },
     "production": {
+      "node": "20.17.0",
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.1"
+      },
+      "autoIncrement": true,
       "channel": "production",
-      "autoIncrement": true
+      "android": {
+        "buildType": "app-bundle"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "../serviceaccount.json",
+        "track": "internal"
+      }
+    }
   }
 }

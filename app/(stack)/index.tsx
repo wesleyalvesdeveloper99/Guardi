@@ -16,7 +16,9 @@ import {
   View,
   TouchableOpacity,
   useColorScheme,
+  ActivityIndicator,
 } from "react-native";
+import axios from "axios";
 
 const isValidUrl = (url: string) => {
   const pattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,6}\/?.*$/;
@@ -32,17 +34,16 @@ export default function HomeScreen() {
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
   const [pin, setPin] = useState(__DEV__ ? "198" : "");
   const [enableCam, setEnableCam] = useState(true);
+  const [loading, setLoading] = useState(false);
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const router = useRouter();
 
   const checkNfc = async () => {
     const supported = await NfcManager.isSupported();
-
     if (supported) {
       const enabled = await NfcManager.isEnabled();
       setNfcAvailable(enabled);
-
       if (!enabled) {
         Alert.alert(
           "NFC desativado",
@@ -65,7 +66,6 @@ export default function HomeScreen() {
     try {
       const storedUrl = await AsyncStorage.getItem("apiUrl");
       const storedPin = await AsyncStorage.getItem("apiPin");
-
       if (storedUrl) setUrl(storedUrl);
       if (storedPin) setPin(storedPin);
     } catch {
@@ -105,19 +105,51 @@ export default function HomeScreen() {
       return;
     }
 
-    await AsyncStorage.setItem("apiUrl", url);
-    await AsyncStorage.setItem("apiPin", pin);
+    setLoading(true);
 
-    router.replace({
-      pathname: "/(stack)/scanner",
-      params: {
-        url,
-        pin,
-        enableNfc: String(enableNfc),
-        enableCam: String(enableCam),
-        enableKeyboard: String(enableKeyboard),
-      },
-    });
+    try {
+      const savedUrl = await AsyncStorage.getItem("apiUrl");
+      const savedPin = await AsyncStorage.getItem("apiPin");
+      const savedSetor = await AsyncStorage.getItem("apiSetor");
+
+      let setor: string | undefined;
+
+      if (url === savedUrl && pin === savedPin && savedSetor) {
+        setor = savedSetor;
+      } else {
+        const { data } = await axios.get(`${String(url)}/get_area_acesso_pin`, {
+          params: { pin },
+        });
+        setor = data || undefined;
+
+        if (setor) {
+          await AsyncStorage.setItem("apiSetor", setor);
+        }
+      }
+
+      await AsyncStorage.setItem("apiUrl", url);
+      await AsyncStorage.setItem("apiPin", pin);
+
+      router.replace({
+        pathname: "/(stack)/scanner",
+        params: {
+          url,
+          pin,
+          setor: String(setor),
+          enableNfc: String(enableNfc),
+          enableCam: String(enableCam),
+          enableKeyboard: String(enableKeyboard),
+        },
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro",
+        text2: "Falha ao buscar setor. Verifique os dados e tente novamente.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -135,7 +167,6 @@ export default function HomeScreen() {
           label="Ativar Cam:"
           onValueChange={(value) => setEnableCam(value)}
         />
-
         {nfcAvailable && (
           <ThemedSwitch
             value={enableNfc}
@@ -162,7 +193,11 @@ export default function HomeScreen() {
         placeholder="Digite o código PIN"
       />
 
-      <ThemedButton title="Continuar" onPress={goToNextScreen} />
+      <ThemedButton
+        loading={loading}
+        title="Continuar"
+        onPress={goToNextScreen}
+      />
 
       <TouchableOpacity
         onPress={() => {
