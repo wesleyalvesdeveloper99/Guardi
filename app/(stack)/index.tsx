@@ -11,12 +11,11 @@ import { ThemedSwitch } from "@/components/ThemedInput/ThemedSwitch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedScreenContrainer } from "@/components/ThemedScreenContrainer";
 import {
-  Linking,
-  Alert,
   View,
-  TouchableOpacity,
+  Alert,
+  Linking,
   useColorScheme,
-  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import axios from "axios";
 
@@ -108,23 +107,14 @@ export default function HomeScreen() {
     setLoading(true);
 
     try {
-      const savedUrl = await AsyncStorage.getItem("apiUrl");
-      const savedPin = await AsyncStorage.getItem("apiPin");
-      const savedSetor = await AsyncStorage.getItem("apiSetor");
+      const { data } = await axios.get(`${String(url)}/get_area_acesso_pin`, {
+        params: { pin },
+      });
 
-      let setor: string | undefined;
+      const setor = data || undefined;
 
-      if (url === savedUrl && pin === savedPin && savedSetor) {
-        setor = savedSetor;
-      } else {
-        const { data } = await axios.get(`${String(url)}/get_area_acesso_pin`, {
-          params: { pin },
-        });
-        setor = data || undefined;
-
-        if (setor) {
-          await AsyncStorage.setItem("apiSetor", setor);
-        }
+      if (setor) {
+        await AsyncStorage.setItem("apiSetor", setor);
       }
 
       await AsyncStorage.setItem("apiUrl", url);
