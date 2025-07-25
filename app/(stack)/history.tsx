@@ -1,22 +1,22 @@
 import * as Sharing from "expo-sharing";
-import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "expo-router";
 import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
+import React, { useEffect, useRef } from "react";
 import { ThemedText } from "@/components/ThemedText";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
 import {
   View,
+  Alert,
   FlatList,
+  Animated,
   Pressable,
   StyleSheet,
-  Alert,
-  Animated,
 } from "react-native";
-import { useRouter } from "expo-router";
 
 export default function HistoryScreen() {
   const router = useRouter();
