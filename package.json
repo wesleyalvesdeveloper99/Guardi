@@ -33,6 +33,8 @@
     "expo-linking": "~7.0.5",
     "expo-network": "~7.0.5",
     "expo-router": "~4.0.20",
+    "expo-screen-orientation": "~8.0.4",
+    "expo-sharing": "~13.0.1",
     "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.1",
     "expo-symbols": "~0.2.2",

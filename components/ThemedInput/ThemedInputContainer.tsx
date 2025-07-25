@@ -21,7 +21,15 @@ export const ThemedInputContainer = ({
   const theme = Colors[colorScheme];
 
   return (
-    <View style={[styles.container, { flexDirection: row ? "row" : "column" }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          flexDirection: row ? "row" : "column",
+          gap: row ? 5 : 0,
+        },
+      ]}
+    >
       {label && (
         <ThemedText
           style={[

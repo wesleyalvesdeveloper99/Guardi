@@ -8,7 +8,7 @@ import { create } from "zustand";
 export type ScannerHistoryType = {
   value: string;
   channel: string;
-  createdAt: Date;
+  createdAt: string;
   resultData?: ApiResponse;
   modeType: ScannerModeType;
   error?: Partial<AxiosError>;

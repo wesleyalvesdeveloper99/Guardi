@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Audio } from "expo-av";
+import Constants from "expo-constants";
 import * as Haptics from "expo-haptics";
 import { Colors } from "@/constants/Colors";
 import Result from "@/components/app/Result";
@@ -10,13 +11,13 @@ import ThemedLoader from "@/components/ThemedLoader";
 import { ThemedText } from "@/components/ThemedText";
 import { getMachineInfo } from "@/utils/getMachineInfo";
 import { CHANNELS_TO_NUMBER } from "@/constants/Scanner";
-import React, { useState, useEffect, useRef } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { CHANNELS, ScannerModeType } from "@/interface/other";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 import {
   View,
@@ -38,12 +39,26 @@ const ScannerScreen = () => {
   const [loading, setLoading] = useState(false);
   const colors = Colors[useColorScheme() ?? "light"];
   const [manualValue, setManualValue] = useState<any>("");
-  const [lastSentByKeyboard, setLastSentByKeyboard] = useState(false);
-  const addHistory = useScannerStore((state) => state.addHistory);
-  const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
+  const [lastSentByKeyboard, setLastSentByKeyboard] = useState(false);
+  const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
   const { url, pin, enableNfc, enableKeyboard, enableCam, setor } =
     useLocalSearchParams();
+
+  const history = useScannerStore((state) => state.history);
+  const addHistory = useScannerStore((state) => state.addHistory);
+
+  const successCount = useMemo(() => {
+    return history.filter(
+      (item) => item.error === undefined && item.resultData?.success == 1
+    ).length;
+  }, [history]);
+
+  const errorCount = useMemo(() => {
+    return history.filter(
+      (item) => item.error === undefined && item.resultData?.success != 1
+    ).length;
+  }, [history]);
 
   const handleScannedValue = async (
     value: string,
@@ -98,8 +113,8 @@ const ScannerScreen = () => {
           modeType,
           value: value,
           channel: canal,
-          createdAt: new Date(),
           resultData: resultData,
+          createdAt: String(new Date()),
         });
         setDate(resultData);
       } else {
@@ -107,7 +122,7 @@ const ScannerScreen = () => {
           modeType,
           value: value,
           channel: canal,
-          createdAt: new Date(),
+          createdAt: String(new Date()),
           error: { message: "Não foi possível comunicar com a URL fornecida!" },
         });
         Toast.show({
@@ -126,8 +141,8 @@ const ScannerScreen = () => {
         modeType,
         value: value,
         channel: canal,
-        createdAt: new Date(),
         error: error || "Error",
+        createdAt: String(new Date()),
       });
       console.error(error);
       await Audio.Sound.createAsync(require("../../assets/sounds/error.mp3"), {
@@ -200,7 +215,17 @@ const ScannerScreen = () => {
           <ThemedLoader />
         ) : !date ? (
           <>
-            <View style={styles.buttonContainer}>
+            <View
+              style={[
+                styles.buttonContainer,
+                { paddingTop: Constants.statusBarHeight },
+              ]}
+            >
+              <View style={{ maxWidth: "20%" }}>
+                <ThemedText numberOfLines={1} style={{ color: "red" }}>
+                  {errorCount}
+                </ThemedText>
+              </View>
               {typeof manualValue !== "object" ? (
                 <>
                   {enableNfc === "true" && (
@@ -241,6 +266,11 @@ const ScannerScreen = () => {
                   Texto
                 </ThemedText>
               )}
+              <View style={{ maxWidth: "20%" }}>
+                <ThemedText numberOfLines={1} style={{ color: "green" }}>
+                  {successCount}
+                </ThemedText>
+              </View>
             </View>
             {enableCam === "true" ? (
               <Scanner
@@ -259,14 +289,13 @@ const ScannerScreen = () => {
             )}
             <View
               style={{
+                gap: 1,
                 bottom: 5,
                 padding: 5,
                 opacity: 0.8,
-                width: "90%",
                 borderRadius: 10,
                 alignSelf: "center",
                 position: "absolute",
-                paddingHorizontal: 1,
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor: "black",
@@ -275,10 +304,27 @@ const ScannerScreen = () => {
               <ThemedText
                 numberOfLines={1}
                 type="defaultSemiBold"
-                style={{ fontSize: 10, textAlign: "center", color: "white" }}
-              >{`${
-                setor !== "undefined" && `SETOR: ${setor}`
-              } PIN: ${pin} URL: ${url}`}</ThemedText>
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  lineHeight: 10,
+                  fontSize: 10,
+                }}
+              >
+                {`${pin} - ${setor}`}
+              </ThemedText>
+              <ThemedText
+                numberOfLines={1}
+                type="defaultSemiBold"
+                style={{
+                  textAlign: "center",
+                  lineHeight: 10,
+                  color: "white",
+                  fontSize: 10,
+                }}
+              >
+                {url}
+              </ThemedText>
             </View>
           </>
         ) : (
@@ -327,10 +373,9 @@ const styles = StyleSheet.create({
     gap: 20,
     zIndex: 100,
     width: "90%",
-    marginTop: 30,
+    flexDirection: "row",
     position: "absolute",
     alignItems: "center",
-    flexDirection: "row",
     justifyContent: "space-between",
   },
   iconButton: {

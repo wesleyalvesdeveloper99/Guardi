@@ -1,8 +1,7 @@
 import React from "react";
-import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
-import { View, Switch, StyleSheet, useColorScheme } from "react-native";
 import { ThemedInputContainer } from "./ThemedInputContainer";
+import { View, Switch, StyleSheet, useColorScheme } from "react-native";
 import {
   Ionicons,
   FontAwesome,
@@ -13,8 +12,8 @@ type IconLibrary = "MaterialCommunityIcons" | "Ionicons" | "FontAwesome";
 
 type IconNames = {
   MaterialCommunityIcons: keyof typeof MaterialCommunityIcons.glyphMap;
-  Ionicons: keyof typeof Ionicons.glyphMap;
   FontAwesome: keyof typeof FontAwesome.glyphMap;
+  Ionicons: keyof typeof Ionicons.glyphMap;
 };
 
 interface Props<T extends IconLibrary> {

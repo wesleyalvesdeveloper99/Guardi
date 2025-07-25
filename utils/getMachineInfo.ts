@@ -1,6 +1,6 @@
 import * as Device from "expo-device";
-import * as Network from "expo-network";
 import Constants from "expo-constants";
+import * as Network from "expo-network";
 
 export const getMachineInfo = async () => {
   const networkInfo = await Network.getIpAddressAsync();

@@ -25,7 +25,6 @@ export default function StackLayout() {
       <Stack.Screen
         name="history"
         options={{
-          headerShown: true,
           title: "History",
         }}
       />

@@ -1,10 +1,10 @@
 import "../styles/global.css";
 import "react-native-reanimated";
+import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as Updates from "expo-updates";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import * as SplashScreen from "expo-splash-screen";
 import { ThemedToast } from "@/components/ThemedToast";
@@ -69,6 +69,7 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}>
       <Stack
         screenOptions={{
+          animation: "simple_push",
           contentStyle: { backgroundColor: "transparent" },
         }}
       >

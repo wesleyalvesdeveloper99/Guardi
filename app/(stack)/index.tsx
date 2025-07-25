@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { useState, useEffect } from "react";
@@ -143,60 +144,66 @@ export default function HomeScreen() {
   };
 
   return (
-    <ThemedScreenContrainer>
-      <ThemedLogo width={"50%"} aspectRatio={1} />
-
-      <View style={{ width: "100%", flexDirection: "column" }}>
-        <ThemedSwitch
-          value={enableKeyboard}
-          label="Ativar Teclado:"
-          onValueChange={(value) => setEnableKeyboard(value)}
-        />
-        <ThemedSwitch
-          value={enableCam}
-          label="Ativar Cam:"
-          onValueChange={(value) => setEnableCam(value)}
-        />
-        {nfcAvailable && (
-          <ThemedSwitch
-            value={enableNfc}
-            label="Ativar NFC:"
-            onValueChange={(value) => setEnableNfc(value)}
-          />
-        )}
-      </View>
-
-      <ThemedInput
-        value={url}
-        scannerEnabled
-        inputMode={"text"}
-        label="URL da API:"
-        onChangeText={setUrl}
-        placeholder="Digite a URL da API"
-      />
-
-      <ThemedInput
-        value={pin}
-        label="Código PIN:"
-        inputMode={"numeric"}
-        onChangeText={setPin}
-        placeholder="Digite o código PIN"
-      />
-
-      <ThemedButton
-        loading={loading}
-        title="Continuar"
-        onPress={goToNextScreen}
-      />
-
+    <>
       <TouchableOpacity
         onPress={() => {
           router.push("/(stack)/history");
         }}
-        style={{ position: "absolute", right: 0 }}
+        style={{
+          right: "5%",
+          zIndex: 100,
+          position: "absolute",
+          top: Constants.statusBarHeight,
+        }}
       >
         <FontAwesome name="history" size={24} color={theme.icon} />
       </TouchableOpacity>
-    </ThemedScreenContrainer>
+      <ThemedScreenContrainer>
+        <ThemedLogo width={"50%"} aspectRatio={1} />
+
+        <View style={{ width: "100%", flexDirection: "column" }}>
+          <ThemedSwitch
+            value={enableKeyboard}
+            label="Ativar Teclado:"
+            onValueChange={(value) => setEnableKeyboard(value)}
+          />
+          <ThemedSwitch
+            value={enableCam}
+            label="Ativar Cam:"
+            onValueChange={(value) => setEnableCam(value)}
+          />
+          {nfcAvailable && (
+            <ThemedSwitch
+              value={enableNfc}
+              label="Ativar NFC:"
+              onValueChange={(value) => setEnableNfc(value)}
+            />
+          )}
+        </View>
+
+        <ThemedInput
+          value={url}
+          scannerEnabled
+          inputMode={"text"}
+          label="URL da API:"
+          onChangeText={setUrl}
+          placeholder="Digite a URL da API"
+        />
+
+        <ThemedInput
+          value={pin}
+          label="Código PIN:"
+          inputMode={"numeric"}
+          onChangeText={setPin}
+          placeholder="Digite o código PIN"
+        />
+
+        <ThemedButton
+          loading={loading}
+          title="Continuar"
+          onPress={goToNextScreen}
+        />
+      </ThemedScreenContrainer>
+    </>
   );
 }
