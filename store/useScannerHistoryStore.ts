@@ -18,6 +18,7 @@ type ScannerStore = {
   clearHistory: () => void;
   history: ScannerHistoryType[];
   addHistory: (item: ScannerHistoryType) => void;
+  addToHistory: (item: ScannerHistoryType[]) => void;
 };
 
 export const useScannerStore = create<ScannerStore>()(
@@ -27,6 +28,7 @@ export const useScannerStore = create<ScannerStore>()(
       clearHistory: () => set({ history: [] }),
       addHistory: (item) =>
         set((state) => ({ history: [item, ...state.history] })),
+      addToHistory: (item) => {},
     }),
     {
       name: "scanner-history",
