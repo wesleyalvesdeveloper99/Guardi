@@ -7,12 +7,11 @@ import { ThemedText } from "@/components/ThemedText";
 import ThemedLoader from "@/components/ThemedLoader";
 import { Keyboard, useColorScheme } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import * as ScreenOrientation from "expo-screen-orientation";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import {
-  ScannerHistoryType,
   useScannerStore,
+  ScannerHistoryType,
 } from "@/store/useScannerHistoryStore";
 import {
   View,
@@ -23,7 +22,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-export default function HistoryScreen() {
+const HistoryScreen = () => {
   const router = useRouter();
   const scheme = useColorScheme();
   const { pin, url } = useLocalSearchParams();
@@ -95,15 +94,6 @@ export default function HistoryScreen() {
       useNativeDriver: true,
     }).start();
   };
-
-  useEffect(() => {
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    return () => {
-      ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
-      );
-    };
-  }, []);
 
   const handleExportCSV = async () => {
     if (!history.length) {
@@ -322,7 +312,9 @@ export default function HistoryScreen() {
       />
     </View>
   );
-}
+};
+
+export default HistoryScreen;
 
 const styles = StyleSheet.create({
   header: {

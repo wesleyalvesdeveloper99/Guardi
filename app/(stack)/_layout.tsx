@@ -25,6 +25,7 @@ export default function StackLayout() {
       <Stack.Screen
         name="history"
         options={{
+          orientation: "landscape",
           title: "History",
         }}
       />

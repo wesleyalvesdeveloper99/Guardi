@@ -11,13 +11,13 @@ import ThemedLoader from "@/components/ThemedLoader";
 import { ThemedText } from "@/components/ThemedText";
 import { getMachineInfo } from "@/utils/getMachineInfo";
 import { CHANNELS_TO_NUMBER } from "@/constants/Scanner";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { CHANNELS, ScannerModeType } from "@/interface/other";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 import {
   View,
@@ -28,7 +28,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Theme } from "@/constants/Theme";
 
 NfcManager.start();
 
