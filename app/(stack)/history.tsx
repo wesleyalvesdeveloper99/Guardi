@@ -23,7 +23,7 @@ import {
 
 const HistoryScreen = () => {
   const router = useRouter();
-  const scheme = useColorScheme();
+  const scheme = useColorScheme() ?? "light";
   const history = useScannerStore((state) => state.history);
   const [data, setData] = useState<ScannerHistoryType[]>([]);
   const clearHistory = useScannerStore((state) => state.clearHistory);
@@ -32,6 +32,7 @@ const HistoryScreen = () => {
   const [searchValue, setSearchValue] = useState("");
   const listRef = useRef<FlatList>(null);
   const lastOffsetY = useRef(0);
+  const colors = Colors[scheme];
 
   useEffect(() => {
     setData(history);
@@ -115,6 +116,9 @@ const HistoryScreen = () => {
             style={({ pressed }) => [
               styles.iconButton,
               pressed && styles.pressed,
+              {
+                backgroundColor: colors.background,
+              },
             ]}
           >
             <Ionicons
@@ -138,6 +142,9 @@ const HistoryScreen = () => {
             style={({ pressed }) => [
               styles.iconButton,
               pressed && styles.pressed,
+              {
+                backgroundColor: colors.background,
+              },
             ]}
           >
             <Ionicons
@@ -152,6 +159,9 @@ const HistoryScreen = () => {
             style={({ pressed }) => [
               styles.iconButton,
               pressed && styles.pressed,
+              {
+                backgroundColor: colors.background,
+              },
             ]}
           >
             <Ionicons
@@ -291,7 +301,6 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: Theme.spacing.sm,
     borderRadius: 50,
-    backgroundColor: "white",
   },
   pressed: {
     opacity: 0.6,
