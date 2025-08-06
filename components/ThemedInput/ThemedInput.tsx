@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
     fontSize: Theme.fontSize.md,
     borderWidth: Theme.border.xs,
     borderRadius: Theme.radius.md,
-    marginVertical: Theme.spacing.sm,
   },
   icon: {
     paddingHorizontal: Theme.spacing.sm,

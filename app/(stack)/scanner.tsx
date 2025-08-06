@@ -11,13 +11,14 @@ import ThemedLoader from "@/components/ThemedLoader";
 import { ThemedText } from "@/components/ThemedText";
 import { getMachineInfo } from "@/utils/getMachineInfo";
 import { CHANNELS_TO_NUMBER } from "@/constants/Scanner";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { CHANNELS, ScannerModeType } from "@/interface/other";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
+import ExpandableSearch from "@/components/app/ExpandableSearch";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 import {
   View,
@@ -288,31 +289,7 @@ const ScannerScreen = () => {
               />
             )}
 
-            <TouchableOpacity
-              onPress={() => {
-                router.push({
-                  pathname: "/(stack)/history",
-                  params: {
-                    url,
-                    pin,
-                  },
-                });
-              }}
-              style={{
-                right: "5%",
-                zIndex: 100,
-                width: "10%",
-                aspectRatio: 1,
-                borderRadius: 1000,
-                position: "absolute",
-                alignItems: "center",
-                backgroundColor: "white",
-                justifyContent: "center",
-                bottom: Constants.statusBarHeight,
-              }}
-            >
-              <FontAwesome name="search" size={24} color={colors.text} />
-            </TouchableOpacity>
+            <ExpandableSearch />
             <View
               style={{
                 gap: 1,

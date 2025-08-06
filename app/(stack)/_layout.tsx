@@ -29,6 +29,14 @@ export default function StackLayout() {
           title: "History",
         }}
       />
+      <Stack.Screen
+        name="webView"
+        options={{
+          headerShown: true,
+          title: "Encontre on-line",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

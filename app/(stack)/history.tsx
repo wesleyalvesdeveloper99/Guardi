@@ -1,13 +1,12 @@
 import * as Sharing from "expo-sharing";
+import { useRouter } from "expo-router";
 import { Theme } from "@/constants/Theme";
 import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { ThemedText } from "@/components/ThemedText";
-import ThemedLoader from "@/components/ThemedLoader";
-import { Keyboard, useColorScheme } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import {
   useScannerStore,
@@ -25,8 +24,6 @@ import {
 const HistoryScreen = () => {
   const router = useRouter();
   const scheme = useColorScheme();
-  const { pin, url } = useLocalSearchParams();
-  const [loading, setLoading] = useState(false);
   const history = useScannerStore((state) => state.history);
   const [data, setData] = useState<ScannerHistoryType[]>([]);
   const clearHistory = useScannerStore((state) => state.clearHistory);
@@ -37,51 +34,8 @@ const HistoryScreen = () => {
   const lastOffsetY = useRef(0);
 
   useEffect(() => {
-    if (pin === undefined && history) {
-      setData(history);
-    }
+    setData(history);
   }, [history]);
-
-  useEffect(() => {
-    if (typeof pin == "string") {
-      fetchRemoteData(pin);
-    }
-  }, [pin]);
-
-  const fetchRemoteData = async (codigo: string) => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${String(url)}/consulta_acesso/?codigo=${codigo}`
-      );
-      const data = await response.json();
-
-      const result: ScannerHistoryType[] = data.map((item: any) => ({
-        value: pin,
-        channel: item.setordescricao,
-        createdAt: item.acessodatahora,
-        resultData: {
-          event: 0,
-          actions: [],
-          user_id: 0,
-          success: item.acessorealizado ? 1 : 0,
-          message: item.acessodescricao,
-          user_name: "",
-          portal_id: 0,
-          user_image: false,
-          url_user_image: "",
-        },
-        modeType: "someMode",
-      }));
-      setData(result ?? []);
-    } catch {
-      Alert.alert("Erro", "Falha ao buscar dados remotos.");
-    } finally {
-      setLoading(false);
-      Keyboard.dismiss();
-    }
-  };
 
   const onScroll = (event: any) => {
     const currentOffset = event.nativeEvent.contentOffset.y;
@@ -142,10 +96,6 @@ const HistoryScreen = () => {
   const filteredHistory = data.filter((item) =>
     item.value.toLowerCase().includes(searchValue.toLowerCase())
   );
-
-  if (loading) {
-    return <ThemedLoader />;
-  }
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors[scheme!].background }}>
