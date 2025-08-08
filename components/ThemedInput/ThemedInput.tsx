@@ -23,23 +23,25 @@ interface Props {
   secureTextEntry?: boolean;
   onSubmitEditing?: () => void;
   onChangeText: (text: string) => void;
+  getRef?: (ref: RNTextInput | null) => void;
+  onScannerToggle?: (isOpen: boolean) => void;
   keyboardType?: "default" | "email-address" | "numeric";
   inputMode?: "none" | "text" | "numeric" | "tel" | "search" | "email" | "url";
-  getRef?: (ref: RNTextInput | null) => void;
 }
 
 export const ThemedInput = ({
   mask,
   label,
   value,
+  getRef,
   inputMode,
   placeholder,
   onChangeText,
+  onScannerToggle,
   onSubmitEditing,
   scannerEnabled = false,
   secureTextEntry = false,
   keyboardType = "default",
-  getRef,
 }: Props) => {
   const [scanning, setScanning] = useState(false);
   const colorScheme = useColorScheme() ?? "light";
@@ -64,15 +66,18 @@ export const ThemedInput = ({
   const handleIconPress = () => {
     if (!scannerEnabled) return;
     setScanning(true);
+    onScannerToggle?.(true);
   };
 
   const handleQRCodeScan = (data: string) => {
+    onScannerToggle?.(false);
     setScanning(false);
     onChangeText(data);
   };
 
   const closeScanner = () => {
     setScanning(false);
+    onScannerToggle?.(false);
   };
 
   return (

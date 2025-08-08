@@ -32,10 +32,11 @@ export default function HomeScreen() {
   const [enableKeyboard, setEnableKeyboard] = useState(true);
   const [nfcAvailable, setNfcAvailable] = useState(false);
   const [enableNfc, setEnableNfc] = useState(nfcAvailable);
+  const [enableFacial, setEnableFacil] = useState(false);
   const [pin, setPin] = useState(__DEV__ ? "198" : "");
   const [enableCam, setEnableCam] = useState(true);
-  const [loading, setLoading] = useState(false);
   const colorScheme = useColorScheme() ?? "light";
+  const [loading, setLoading] = useState(false);
   const theme = Colors[colorScheme];
   const router = useRouter();
 
@@ -129,6 +130,7 @@ export default function HomeScreen() {
           setor: String(setor),
           enableNfc: String(enableNfc),
           enableCam: String(enableCam),
+          enableFacial: String(enableFacial),
           enableKeyboard: String(enableKeyboard),
         },
       });
@@ -171,6 +173,11 @@ export default function HomeScreen() {
             value={enableCam}
             label="Ativar Cam:"
             onValueChange={(value) => setEnableCam(value)}
+          />
+          <ThemedSwitch
+            value={enableFacial}
+            label="Ativar Facial:"
+            onValueChange={(value) => setEnableFacil(value)}
           />
           {nfcAvailable && (
             <ThemedSwitch

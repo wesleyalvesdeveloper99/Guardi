@@ -5,34 +5,42 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import {
-  View,
+  KeyboardAvoidingView,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  KeyboardAvoidingView,
   Platform,
+  View,
 } from "react-native";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { useColorScheme } from "react-native";
 import { Colors } from "@/constants/Colors";
-import { router } from "expo-router";
 
-const ExpandableSearch = () => {
-  const [manualValue, setManualValue] = useState("");
-  const inputRef = useRef<any>(null);
-  const colors = Colors[useColorScheme() ?? "light"];
-
+const ExpandableSearch = ({ setUrl }: any) => {
   const [expandedState, setExpandedState] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [manualValue, setManualValue] = useState("");
+  const colors = Colors[useColorScheme() ?? "light"];
+  const borderRightRadiusAnim = useSharedValue(100);
   const borderLeftRadiusAnim = useSharedValue(0);
   const expanded = useSharedValue(false);
-  const widthAnim = useSharedValue(60);
+  const widthAnim = useSharedValue(10);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setExpandedState(true);
+      expanded.value = true;
+    }, 500);
+  }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     width: widthAnim.value,
     borderTopLeftRadius: borderLeftRadiusAnim.value,
     borderBottomLeftRadius: borderLeftRadiusAnim.value,
+    borderTopRightRadius: borderRightRadiusAnim.value,
+    borderBottomRightRadius: borderRightRadiusAnim.value,
   }));
 
   useEffect(() => {
@@ -41,7 +49,7 @@ const ExpandableSearch = () => {
         duration: 300,
         easing: Easing.out(Easing.cubic),
       });
-      borderLeftRadiusAnim.value = withTiming(45, {
+      borderLeftRadiusAnim.value = withTiming(10, {
         duration: 1000,
         easing: Easing.out(Easing.cubic),
       });
@@ -57,6 +65,20 @@ const ExpandableSearch = () => {
     }
   }, [expandedState]);
 
+  useEffect(() => {
+    if (scannerOpen) {
+      borderRightRadiusAnim.value = withTiming(10, {
+        duration: 300,
+        easing: Easing.out(Easing.cubic),
+      });
+    } else {
+      borderRightRadiusAnim.value = withTiming(100, {
+        duration: 300,
+        easing: Easing.out(Easing.cubic),
+      });
+    }
+  }, [scannerOpen]);
+
   const expand = () => {
     expanded.value = true;
     setExpandedState(true);
@@ -65,16 +87,12 @@ const ExpandableSearch = () => {
   const collapse = () => {
     expanded.value = false;
     setExpandedState(false);
+    setScannerOpen(false);
   };
 
   const handleScannedValue = async (value: string) => {
     collapse();
-    router.push({
-      pathname: "/(stack)/webView",
-      params: {
-        url: `http://nuhsistemas.app.br:9000/consulta_acesso/?codigo=${value}`,
-      },
-    });
+    setUrl(`http://nuhsistemas.app.br:9000/consulta_acesso/?codigo=${value}`);
   };
 
   return (
@@ -96,20 +114,28 @@ const ExpandableSearch = () => {
         ) : (
           <View style={styles.inputContainer}>
             <ThemedInput
+              scannerEnabled
               inputMode="text"
               value={manualValue}
+              placeholder="Digite o código"
               onChangeText={setManualValue}
-              placeholder="Digite o código manual"
-              getRef={(ref) => {
-                inputRef.current = ref;
-              }}
+              onScannerToggle={setScannerOpen}
               onSubmitEditing={() => {
                 handleScannedValue(manualValue);
               }}
             />
-
-            <TouchableOpacity onPress={collapse} style={styles.icon}>
-              <FontAwesome name="close" size={20} color={colors.text} />
+            <TouchableOpacity
+              onPress={collapse}
+              style={[
+                styles.icon,
+                {
+                  position: "absolute",
+                  top: 0,
+                  right: scannerOpen ? 0 : "10%",
+                },
+              ]}
+            >
+              <FontAwesome name="close" size={20} color={colors.icon} />
             </TouchableOpacity>
           </View>
         )}
@@ -122,10 +148,10 @@ const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   iconButton: {
-    height: 60,
     right: "5%",
     bottom: 30,
     zIndex: 100,
+    minHeight: 60,
     overflow: "hidden",
     borderRadius: 100,
     alignSelf: "center",
@@ -138,7 +164,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    paddingLeft: 5,
+    paddingLeft: 7,
+    paddingRight: 7,
     height: "100%",
     width: "100%",
   },

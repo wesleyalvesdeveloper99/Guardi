@@ -11,14 +11,13 @@ import ThemedLoader from "@/components/ThemedLoader";
 import { ThemedText } from "@/components/ThemedText";
 import { getMachineInfo } from "@/utils/getMachineInfo";
 import { CHANNELS_TO_NUMBER } from "@/constants/Scanner";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { CHANNELS, ScannerModeType } from "@/interface/other";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
-import ExpandableSearch from "@/components/app/ExpandableSearch";
 import { useScannerStore } from "@/store/useScannerHistoryStore";
 import { ThemedInput } from "@/components/ThemedInput/ThemedInput";
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import ReactNativeSunmiBroadcastScanner from "@linvix-sistemas/react-native-sunmi-broadcast-scanner";
 import {
   View,
@@ -43,8 +42,15 @@ const ScannerScreen = () => {
   const [date, setDate] = useState<ApiResponse | undefined>(undefined);
   const [lastSentByKeyboard, setLastSentByKeyboard] = useState(false);
   const [modeType, setmodeType] = useState<ScannerModeType>("DEFAULT");
-  const { url, pin, enableNfc, enableKeyboard, enableCam, setor } =
-    useLocalSearchParams();
+  const {
+    url,
+    pin,
+    setor,
+    enableCam,
+    enableNfc,
+    enableFacial,
+    enableKeyboard,
+  } = useLocalSearchParams();
 
   const history = useScannerStore((state) => state.history);
   const addHistory = useScannerStore((state) => state.addHistory);
@@ -227,7 +233,7 @@ const ScannerScreen = () => {
                   {errorCount}
                 </ThemedText>
               </View>
-              {typeof manualValue !== "object" ? (
+              {typeof manualValue !== "object" && (
                 <>
                   {enableNfc === "true" && (
                     <TouchableOpacity
@@ -239,6 +245,18 @@ const ScannerScreen = () => {
                         name="credit-card-wireless-outline"
                         size={40}
                         color={readNfc ? "green" : "white"}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  {enableCam === "true" && enableFacial === "true" && (
+                    <TouchableOpacity
+                      style={styles.iconButton}
+                      onPress={handleIconPress}
+                    >
+                      <MaterialCommunityIcons
+                        color={modeType === "FACIAL" ? "green" : "white"}
+                        name={"face-agent"}
+                        size={40}
                       />
                     </TouchableOpacity>
                   )}
@@ -259,13 +277,6 @@ const ScannerScreen = () => {
                     />
                   )}
                 </>
-              ) : (
-                <ThemedText
-                  type="subtitle"
-                  style={{ textAlign: "center", width: "100%" }}
-                >
-                  Texto
-                </ThemedText>
               )}
               <View style={{ maxWidth: "20%" }}>
                 <ThemedText numberOfLines={1} style={{ color: "green" }}>
@@ -289,7 +300,17 @@ const ScannerScreen = () => {
               />
             )}
 
-            <ExpandableSearch />
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/(stack)/webView",
+                });
+              }}
+              style={[styles.icon, { backgroundColor: colors.background }]}
+            >
+              <FontAwesome name="search" size={20} color={colors.text} />
+            </TouchableOpacity>
+
             <View
               style={{
                 gap: 1,
@@ -368,6 +389,17 @@ const ScannerScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    height: 60,
+    right: "5%",
+    bottom: 30,
+    zIndex: 100,
+    aspectRatio: 1,
+    borderRadius: 100,
+    position: "absolute",
     alignItems: "center",
     justifyContent: "center",
   },
