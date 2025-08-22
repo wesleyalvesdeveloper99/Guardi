@@ -22,6 +22,7 @@ interface Props {
   scannerEnabled?: boolean;
   secureTextEntry?: boolean;
   onSubmitEditing?: () => void;
+  onHandlerQrCode?: () => void;
   onChangeText: (text: string) => void;
   getRef?: (ref: RNTextInput | null) => void;
   onScannerToggle?: (isOpen: boolean) => void;
@@ -39,6 +40,7 @@ export const ThemedInput = ({
   onChangeText,
   onScannerToggle,
   onSubmitEditing,
+  onHandlerQrCode,
   scannerEnabled = false,
   secureTextEntry = false,
   keyboardType = "default",
@@ -73,6 +75,7 @@ export const ThemedInput = ({
     onScannerToggle?.(false);
     setScanning(false);
     onChangeText(data);
+    if (onHandlerQrCode) onHandlerQrCode();
   };
 
   const closeScanner = () => {
@@ -156,6 +159,7 @@ const styles = StyleSheet.create({
     position: "relative",
     alignItems: "center",
     overflow: "hidden",
+    marginTop: 10,
     height: 400,
     flex: 1,
   },

@@ -17,8 +17,9 @@ import React, { useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { useColorScheme } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { router } from "expo-router";
 
-const ExpandableSearch = ({ setUrl }: any) => {
+const ExpandableSearch = () => {
   const [expandedState, setExpandedState] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [manualValue, setManualValue] = useState("");
@@ -27,13 +28,6 @@ const ExpandableSearch = ({ setUrl }: any) => {
   const borderLeftRadiusAnim = useSharedValue(0);
   const expanded = useSharedValue(false);
   const widthAnim = useSharedValue(10);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setExpandedState(true);
-      expanded.value = true;
-    }, 500);
-  }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     width: widthAnim.value,
@@ -92,7 +86,13 @@ const ExpandableSearch = ({ setUrl }: any) => {
 
   const handleScannedValue = async (value: string) => {
     collapse();
-    setUrl(`http://nuhsistemas.app.br:9000/consulta_acesso/?codigo=${value}`);
+
+    router.push({
+      pathname: "/(stack)/webView",
+      params: {
+        url: `http://nuhsistemas.app.br:9000/consulta_acesso/?codigo=${value}`,
+      },
+    });
   };
 
   return (
@@ -120,6 +120,9 @@ const ExpandableSearch = ({ setUrl }: any) => {
               placeholder="Digite o código"
               onChangeText={setManualValue}
               onScannerToggle={setScannerOpen}
+              onHandlerQrCode={() => {
+                handleScannedValue(manualValue);
+              }}
               onSubmitEditing={() => {
                 handleScannedValue(manualValue);
               }}

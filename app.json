@@ -10,7 +10,6 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": false,
-      "package": "com.guardi.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {

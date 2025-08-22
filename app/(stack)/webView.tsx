@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { WebView } from "react-native-webview";
+import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
-import ExpandableSearch from "@/components/app/ExpandableSearch";
 
 const WebViewScreen = () => {
-  const [url, setUrl] = useState();
-
-  console.log(url);
+  const { url } = useLocalSearchParams();
 
   return (
     <SafeAreaView style={styles.container}>
-      <ExpandableSearch setUrl={setUrl} />
       <WebView
         source={{
-          uri: url || "",
+          uri: url as string,
         }}
         allowsBackForwardNavigationGestures
         autoManageStatusBarEnabled

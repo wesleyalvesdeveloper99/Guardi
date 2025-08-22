@@ -28,6 +28,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import ExpandableSearch from "@/components/app/ExpandableSearch";
 
 NfcManager.start();
 
@@ -109,7 +110,10 @@ const ScannerScreen = () => {
         `${String(url)}/validar_celular`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "ngrok-skip-browser-warning": "true",
+          },
         }
       );
 
@@ -300,7 +304,8 @@ const ScannerScreen = () => {
               />
             )}
 
-            <TouchableOpacity
+            <ExpandableSearch />
+            {/* <TouchableOpacity
               onPress={() => {
                 router.push({
                   pathname: "/(stack)/webView",
@@ -309,7 +314,7 @@ const ScannerScreen = () => {
               style={[styles.icon, { backgroundColor: colors.background }]}
             >
               <FontAwesome name="search" size={20} color={colors.text} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <View
               style={{

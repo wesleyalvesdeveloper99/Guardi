@@ -111,6 +111,9 @@ export default function HomeScreen() {
     try {
       const { data } = await axios.get(`${String(url)}/get_area_acesso_pin`, {
         params: { pin },
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
       });
 
       const setor = data || undefined;

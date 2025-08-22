@@ -19,6 +19,7 @@ export default function StackLayout() {
       <Stack.Screen
         name="scanner"
         options={{
+          orientation: "portrait",
           title: "Scanner",
         }}
       />
@@ -33,6 +34,7 @@ export default function StackLayout() {
         name="webView"
         options={{
           headerShown: true,
+          orientation: "all",
           title: "Encontre on-line",
           animation: "slide_from_right",
         }}
