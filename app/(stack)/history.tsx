@@ -148,8 +148,8 @@ const HistoryScreen = () => {
             ]}
           >
             <Ionicons
-              name="download-outline"
               size={28}
+              name="download-outline"
               color={Colors[scheme!].icon}
             />
           </Pressable>
@@ -165,7 +165,7 @@ const HistoryScreen = () => {
             ]}
           >
             <Ionicons
-              name="trash-outline"
+              name="qr-code-outline"
               size={28}
               color={Colors[scheme!].icon}
             />

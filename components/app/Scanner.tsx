@@ -10,9 +10,15 @@ interface Props {
   onHandleCapture?: (base64: string) => void;
   onScan: (data: string) => void;
   mode?: ScannerModeType;
+  borderRadius?: number;
 }
 
-const Scanner = ({ onScan, onHandleCapture, mode = "DEFAULT" }: Props) => {
+const Scanner = ({
+  onScan,
+  onHandleCapture,
+  mode = "DEFAULT",
+  borderRadius = 0,
+}: Props) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<"off" | "on">("off");
   const [scanned, setScanned] = useState(false);
@@ -65,6 +71,7 @@ const Scanner = ({ onScan, onHandleCapture, mode = "DEFAULT" }: Props) => {
           mode === "DEFAULT" && !scanned ? handleBarCodeScanned : undefined
         }
         style={{
+          borderRadius: borderRadius,
           width: "100%",
           height: "100%",
         }}
@@ -82,7 +89,7 @@ const Scanner = ({ onScan, onHandleCapture, mode = "DEFAULT" }: Props) => {
       >
         <View
           style={{
-            width: "60%",
+            height: 300,
             borderColor: "#fff",
             borderWidth: Theme.border.sm,
             aspectRatio: mode === "FACIAL" ? 0.7 : 1,

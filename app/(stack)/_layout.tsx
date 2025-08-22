@@ -31,12 +31,9 @@ export default function StackLayout() {
         }}
       />
       <Stack.Screen
-        name="webView"
+        name="searchOnline"
         options={{
-          headerShown: true,
-          orientation: "all",
-          title: "Encontre on-line",
-          animation: "slide_from_right",
+          orientation: "landscape",
         }}
       />
     </Stack>

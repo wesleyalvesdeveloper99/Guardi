@@ -28,7 +28,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import ExpandableSearch from "@/components/app/ExpandableSearch";
 
 NfcManager.start();
 
@@ -304,17 +303,17 @@ const ScannerScreen = () => {
               />
             )}
 
-            <ExpandableSearch />
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 router.push({
-                  pathname: "/(stack)/webView",
+                  pathname: "/(stack)/searchOnline",
+                  params: { url },
                 });
               }}
               style={[styles.icon, { backgroundColor: colors.background }]}
             >
               <FontAwesome name="search" size={20} color={colors.text} />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <View
               style={{

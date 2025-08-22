@@ -11,6 +11,8 @@ import {
   StyleSheet,
   useColorScheme,
   TouchableOpacity,
+  Modal,
+  Dimensions,
   TextInput as RNTextInput,
 } from "react-native";
 
@@ -72,8 +74,8 @@ export const ThemedInput = ({
   };
 
   const handleQRCodeScan = (data: string) => {
-    onScannerToggle?.(false);
     setScanning(false);
+    onScannerToggle?.(false);
     onChangeText(data);
     if (onHandlerQrCode) onHandlerQrCode();
   };
@@ -82,6 +84,10 @@ export const ThemedInput = ({
     setScanning(false);
     onScannerToggle?.(false);
   };
+
+  const { width, height } = Dimensions.get("window");
+  const scannerWidth = width * 0.8;
+  const scannerHeight = height * 0.5;
 
   return (
     <ThemedInputContainer label={label}>
@@ -118,21 +124,20 @@ export const ThemedInput = ({
         )}
       </View>
 
-      {scannerEnabled && scanning && (
-        <View
-          style={[
-            styles.scannerContainer,
-            {
-              borderRadius: Theme.radius.md,
-            },
-          ]}
+      <Modal
+        visible={scanning}
+        transparent={true}
+        statusBarTranslucent
+        animationType="slide"
+      >
+        <TouchableOpacity
+          style={styles.modalContainer}
+          onPress={closeScanner}
+          activeOpacity={1}
         >
-          <Scanner onScan={handleQRCodeScan} />
-          <TouchableOpacity style={styles.closeButton} onPress={closeScanner}>
-            <Ionicons name="close-circle" size={30} color={theme.icon} />
-          </TouchableOpacity>
-        </View>
-      )}
+          <Scanner borderRadius={12} onScan={handleQRCodeScan} />
+        </TouchableOpacity>
+      </Modal>
     </ThemedInputContainer>
   );
 };
@@ -154,19 +159,16 @@ const styles = StyleSheet.create({
   icon: {
     paddingHorizontal: Theme.spacing.sm,
   },
-  scannerContainer: {
+  modalContainer: {
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
-    position: "relative",
     alignItems: "center",
-    overflow: "hidden",
-    marginTop: 10,
-    height: 400,
     flex: 1,
   },
-  closeButton: {
-    top: 0,
-    right: 0,
-    padding: 10,
-    position: "absolute",
+  scannerWrapper: {
+    borderRadius: Theme.radius.md,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
   },
 });
